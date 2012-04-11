@@ -21,7 +21,9 @@
 		D945F687153462E400BB3EF7 /* FlickerPlacesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D945F686153462E400BB3EF7 /* FlickerPlacesTests.m */; };
 		D945F69315348CC000BB3EF7 /* android-home.png in Resources */ = {isa = PBXBuildFile; fileRef = D945F69215348CC000BB3EF7 /* android-home.png */; };
 		D945F69815349C8900BB3EF7 /* FlickrFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = D945F69715349C8900BB3EF7 /* FlickrFetcher.m */; };
-		D945F69B1534A43400BB3EF7 /* FPTopPlacesController.m in Sources */ = {isa = PBXBuildFile; fileRef = D945F69A1534A43400BB3EF7 /* FPTopPlacesController.m */; };
+		D945F69B1534A43400BB3EF7 /* FlickerPlacesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D945F69A1534A43400BB3EF7 /* FlickerPlacesTableViewController.m */; };
+		D945F69E1534CBC700BB3EF7 /* FPPlaceDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D945F69D1534CBC700BB3EF7 /* FPPlaceDetailsViewController.m */; };
+		D95C33AB15360CD800A36EDD /* ImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D95C33AA15360CD800A36EDD /* ImageViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,8 +58,12 @@
 		D945F69515349C8900BB3EF7 /* FlickrAPIKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlickrAPIKey.h; sourceTree = "<group>"; };
 		D945F69615349C8900BB3EF7 /* FlickrFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlickrFetcher.h; sourceTree = "<group>"; };
 		D945F69715349C8900BB3EF7 /* FlickrFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlickrFetcher.m; sourceTree = "<group>"; };
-		D945F6991534A43400BB3EF7 /* FPTopPlacesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FPTopPlacesController.h; sourceTree = "<group>"; };
-		D945F69A1534A43400BB3EF7 /* FPTopPlacesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPTopPlacesController.m; sourceTree = "<group>"; };
+		D945F6991534A43400BB3EF7 /* FlickerPlacesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlickerPlacesTableViewController.h; sourceTree = "<group>"; };
+		D945F69A1534A43400BB3EF7 /* FlickerPlacesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlickerPlacesTableViewController.m; sourceTree = "<group>"; };
+		D945F69C1534CBC700BB3EF7 /* FPPlaceDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FPPlaceDetailsViewController.h; sourceTree = "<group>"; };
+		D945F69D1534CBC700BB3EF7 /* FPPlaceDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPPlaceDetailsViewController.m; sourceTree = "<group>"; };
+		D95C33A915360CD800A36EDD /* ImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageViewController.h; sourceTree = "<group>"; };
+		D95C33AA15360CD800A36EDD /* ImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,11 +125,13 @@
 		D945F653153462E400BB3EF7 /* FlickerPlaces */ = {
 			isa = PBXGroup;
 			children = (
-				D945F65C153462E400BB3EF7 /* FPAppDelegate.h */,
-				D945F65D153462E400BB3EF7 /* FPAppDelegate.m */,
 				D945F65F153462E400BB3EF7 /* MainStoryboard_iPhone.storyboard */,
-				D945F6991534A43400BB3EF7 /* FPTopPlacesController.h */,
-				D945F69A1534A43400BB3EF7 /* FPTopPlacesController.m */,
+				D95C33A915360CD800A36EDD /* ImageViewController.h */,
+				D95C33AA15360CD800A36EDD /* ImageViewController.m */,
+				D945F69C1534CBC700BB3EF7 /* FPPlaceDetailsViewController.h */,
+				D945F69D1534CBC700BB3EF7 /* FPPlaceDetailsViewController.m */,
+				D945F6991534A43400BB3EF7 /* FlickerPlacesTableViewController.h */,
+				D945F69A1534A43400BB3EF7 /* FlickerPlacesTableViewController.m */,
 				D945F654153462E400BB3EF7 /* Supporting Files */,
 			);
 			path = FlickerPlaces;
@@ -132,6 +140,8 @@
 		D945F654153462E400BB3EF7 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				D945F65C153462E400BB3EF7 /* FPAppDelegate.h */,
+				D945F65D153462E400BB3EF7 /* FPAppDelegate.m */,
 				D945F655153462E400BB3EF7 /* FlickerPlaces-Info.plist */,
 				D945F656153462E400BB3EF7 /* InfoPlist.strings */,
 				D945F659153462E400BB3EF7 /* main.m */,
@@ -280,7 +290,9 @@
 				D945F65A153462E400BB3EF7 /* main.m in Sources */,
 				D945F65E153462E400BB3EF7 /* FPAppDelegate.m in Sources */,
 				D945F69815349C8900BB3EF7 /* FlickrFetcher.m in Sources */,
-				D945F69B1534A43400BB3EF7 /* FPTopPlacesController.m in Sources */,
+				D945F69B1534A43400BB3EF7 /* FlickerPlacesTableViewController.m in Sources */,
+				D945F69E1534CBC700BB3EF7 /* FPPlaceDetailsViewController.m in Sources */,
+				D95C33AB15360CD800A36EDD /* ImageViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -454,6 +466,7 @@
 				D945F68C153462E400BB3EF7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		D945F68D153462E400BB3EF7 /* Build configuration list for PBXNativeTarget "FlickerPlacesTests" */ = {
 			isa = XCConfigurationList;
@@ -462,6 +475,7 @@
 				D945F68F153462E400BB3EF7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

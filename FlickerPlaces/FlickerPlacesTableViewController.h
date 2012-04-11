@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface FPTopPlacesController : UITableViewController
+@interface FlickerPlacesTableViewController : UITableViewController
 
 @property (strong, nonatomic) NSArray * flickrData; 
 

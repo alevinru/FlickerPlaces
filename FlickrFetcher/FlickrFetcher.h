@@ -14,6 +14,7 @@
 #define FLICKR_PHOTO_OWNER @"ownername"
 #define FLICKR_LATITUDE @"latitude"
 #define FLICKR_LONGITUDE @"longitude"
+#define FLICKR_PLACE_PHOTO_COUNT @"photo_count"
 
 typedef enum {
 	FlickrPhotoFormatSquare = 1,

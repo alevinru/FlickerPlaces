@@ -6,17 +6,22 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "FPTopPlacesController.h"
+#import "FlickerPlacesTableViewController.h"
 #import "FlickrFetcher.h"
+#import "FPPlaceDetailsViewController.h"
 
-@interface FPTopPlacesController ()
+#import "ImageViewController.h"
+
+#define TOP_PLACES_VIEW_TITLE @"Top Places"
+#define RECENT_PHOTOS_VIEW_TITLE @"Recent Photos"
+
+@interface FlickerPlacesTableViewController ()
 
 @end
 
-@implementation FPTopPlacesController
+@implementation FlickerPlacesTableViewController
 
 @synthesize flickrData = _flickrData;
-
 
 - (NSArray *) flickrData {
     if (!_flickrData) {
@@ -30,6 +35,24 @@
 }
 
 
+-(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    NSDictionary * fclickrObject = [[self.flickrData objectAtIndex: [self.tableView indexPathForCell: sender].row] copy];
+    
+    id dvc = [segue destinationViewController];
+    
+    if ([segue.identifier isEqualToString: @"Show place detail"])
+        [dvc setDatasource: fclickrObject];
+    else if ([segue.identifier isEqualToString: @"Show photos from the place"])
+        [dvc setFlickrData: [FlickrFetcher photosInPlace: fclickrObject maxResults: 20]];
+    else if ([segue.identifier isEqualToString: @"Show the photo"])
+        [dvc setImageURL: [FlickrFetcher urlForPhoto: fclickrObject format: FlickrPhotoFormatLarge]];
+    
+    //NSLog(@"%@: %@", NSStringFromSelector(_cmd), segue.identifier);
+    
+}
+
+
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
@@ -39,12 +62,15 @@
     return self;
 }
 
+
+#pragma mark - View lifecycle
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 
     // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
+    self.clearsSelectionOnViewWillAppear = NO;
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
@@ -62,6 +88,7 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -76,19 +103,26 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"FlickrObject";
+    NSString *cellIdentifier = self.title;
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     
-    if ([self.title isEqualToString: @"Top Places"]) {
-        cell.textLabel.text = [[self.flickrData objectAtIndex: indexPath.row] objectForKey: @"_content"];
+    if (!cell) {
+        NSLog(@"No cell for %@", cellIdentifier);
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier: cellIdentifier];
+        cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+    }
+    
+    if ([cellIdentifier isEqualToString: TOP_PLACES_VIEW_TITLE]) {
+        cell.textLabel.text = [[self.flickrData objectAtIndex: indexPath.row] objectForKey: FLICKR_PLACE_NAME];
         
-        cell.detailTextLabel.text = [NSString stringWithFormat: @"%@ photos", [[self.flickrData objectAtIndex: indexPath.row] objectForKey: @"photo_count"]];
+        cell.detailTextLabel.text = [NSString stringWithFormat: @"%@ photos", [[self.flickrData objectAtIndex: indexPath.row] objectForKey: FLICKR_PLACE_PHOTO_COUNT]];
     } else {
         cell.textLabel.text = [[self.flickrData objectAtIndex: indexPath.row] objectForKey: FLICKR_PHOTO_TITLE];
         
         cell.detailTextLabel.text = [[self.flickrData objectAtIndex: indexPath.row] objectForKey: FLICKR_PHOTO_DESCRIPTION];
     }
+    
     return cell;
 }
 
@@ -132,6 +166,13 @@
 */
 
 #pragma mark - Table view delegate
+
+- (void) tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath 
+{
+    if ([self.title isEqualToString: TOP_PLACES_VIEW_TITLE]) {
+        [self performSegueWithIdentifier: @"Show place detail"  sender: [self.tableView cellForRowAtIndexPath:indexPath]];
+    }
+}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
