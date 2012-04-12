@@ -21,7 +21,7 @@
 		D945F687153462E400BB3EF7 /* FlickerPlacesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D945F686153462E400BB3EF7 /* FlickerPlacesTests.m */; };
 		D945F69315348CC000BB3EF7 /* android-home.png in Resources */ = {isa = PBXBuildFile; fileRef = D945F69215348CC000BB3EF7 /* android-home.png */; };
 		D945F69815349C8900BB3EF7 /* FlickrFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = D945F69715349C8900BB3EF7 /* FlickrFetcher.m */; };
-		D945F69B1534A43400BB3EF7 /* FlickerPlacesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D945F69A1534A43400BB3EF7 /* FlickerPlacesTableViewController.m */; };
+		D945F69B1534A43400BB3EF7 /* FPTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D945F69A1534A43400BB3EF7 /* FPTableViewController.m */; };
 		D945F69E1534CBC700BB3EF7 /* FPPlaceDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D945F69D1534CBC700BB3EF7 /* FPPlaceDetailsViewController.m */; };
 		D95C33AB15360CD800A36EDD /* ImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D95C33AA15360CD800A36EDD /* ImageViewController.m */; };
 		D95C33AE1536BE1600A36EDD /* FPTestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D95C33AD1536BE1600A36EDD /* FPTestViewController.m */; };
@@ -60,8 +60,8 @@
 		D945F69515349C8900BB3EF7 /* FlickrAPIKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlickrAPIKey.h; sourceTree = "<group>"; };
 		D945F69615349C8900BB3EF7 /* FlickrFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlickrFetcher.h; sourceTree = "<group>"; };
 		D945F69715349C8900BB3EF7 /* FlickrFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlickrFetcher.m; sourceTree = "<group>"; };
-		D945F6991534A43400BB3EF7 /* FlickerPlacesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlickerPlacesTableViewController.h; sourceTree = "<group>"; };
-		D945F69A1534A43400BB3EF7 /* FlickerPlacesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlickerPlacesTableViewController.m; sourceTree = "<group>"; };
+		D945F6991534A43400BB3EF7 /* FPTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FPTableViewController.h; sourceTree = "<group>"; };
+		D945F69A1534A43400BB3EF7 /* FPTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPTableViewController.m; sourceTree = "<group>"; };
 		D945F69C1534CBC700BB3EF7 /* FPPlaceDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FPPlaceDetailsViewController.h; sourceTree = "<group>"; };
 		D945F69D1534CBC700BB3EF7 /* FPPlaceDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPPlaceDetailsViewController.m; sourceTree = "<group>"; };
 		D95C33A915360CD800A36EDD /* ImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageViewController.h; sourceTree = "<group>"; };
@@ -136,8 +136,8 @@
 				D95C33AA15360CD800A36EDD /* ImageViewController.m */,
 				D945F69C1534CBC700BB3EF7 /* FPPlaceDetailsViewController.h */,
 				D945F69D1534CBC700BB3EF7 /* FPPlaceDetailsViewController.m */,
-				D945F6991534A43400BB3EF7 /* FlickerPlacesTableViewController.h */,
-				D945F69A1534A43400BB3EF7 /* FlickerPlacesTableViewController.m */,
+				D945F6991534A43400BB3EF7 /* FPTableViewController.h */,
+				D945F69A1534A43400BB3EF7 /* FPTableViewController.m */,
 				D945F654153462E400BB3EF7 /* Supporting Files */,
 			);
 			path = FlickerPlaces;
@@ -299,9 +299,9 @@
 				D945F65A153462E400BB3EF7 /* main.m in Sources */,
 				D945F65E153462E400BB3EF7 /* FPAppDelegate.m in Sources */,
 				D945F69815349C8900BB3EF7 /* FlickrFetcher.m in Sources */,
-				D945F69B1534A43400BB3EF7 /* FlickerPlacesTableViewController.m in Sources */,
 				D945F69E1534CBC700BB3EF7 /* FPPlaceDetailsViewController.m in Sources */,
 				D95C33AB15360CD800A36EDD /* ImageViewController.m in Sources */,
+				D945F69B1534A43400BB3EF7 /* FPTableViewController.m in Sources */,
 				D95C33AE1536BE1600A36EDD /* FPTestViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

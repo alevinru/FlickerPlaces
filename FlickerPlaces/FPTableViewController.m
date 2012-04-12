@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "FlickerPlacesTableViewController.h"
+#import "FPTableViewController.h"
 #import "FlickrFetcher.h"
 #import "FPPlaceDetailsViewController.h"
 
@@ -15,23 +15,45 @@
 #define TOP_PLACES_VIEW_TITLE @"Top Places"
 #define RECENT_PHOTOS_VIEW_TITLE @"Recent Photos"
 
-@interface FlickerPlacesTableViewController ()
+@interface FPTableViewController ()
 
 @end
 
-@implementation FlickerPlacesTableViewController
+@implementation FPTableViewController
 
 @synthesize flickrData = _flickrData;
+@synthesize refreshButton = _refreshButton;
 
 - (NSArray *) flickrData {
-    if (!_flickrData) {
-        if ([self.title isEqualToString: @"Top Places"])
-            _flickrData = [FlickrFetcher topPlaces];
-        else 
-            _flickrData = [FlickrFetcher recentGeoreferencedPhotos];
-    }
+    return _flickrData ? _flickrData : (_flickrData = [[NSArray alloc] init]);
+}
+
+- (IBAction)refreshButtonPressed:(UIBarButtonItem *)sender {
     
-    return _flickrData;
+    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:spinner];
+    
+    [spinner startAnimating];
+    
+    dispatch_queue_t downloadQueue = dispatch_queue_create("flickr downloader", NULL);
+    dispatch_async(downloadQueue, ^{
+        [self loadData];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+            self.navigationItem.rightBarButtonItem = sender;
+        });
+    });
+    
+    dispatch_release(downloadQueue);    
+}
+
+- (void) loadData {
+    if ([self.title isEqualToString: TOP_PLACES_VIEW_TITLE])
+        self.flickrData = [FlickrFetcher topPlaces];
+    else if ([self.title isEqualToString: RECENT_PHOTOS_VIEW_TITLE])
+        self.flickrData = [FlickrFetcher recentGeoreferencedPhotos];
+
 }
 
 
@@ -65,19 +87,21 @@
 
 #pragma mark - View lifecycle
 
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 
     // Uncomment the following line to preserve selection between presentations.
     self.clearsSelectionOnViewWillAppear = NO;
- 
+     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)viewDidUnload
 {
+    [self setRefreshButton:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -120,7 +144,10 @@
     } else {
         cell.textLabel.text = [[self.flickrData objectAtIndex: indexPath.row] objectForKey: FLICKR_PHOTO_TITLE];
         
-        cell.detailTextLabel.text = [[self.flickrData objectAtIndex: indexPath.row] objectForKey: FLICKR_PHOTO_DESCRIPTION];
+        if ([cell.textLabel.text isEqualToString:@""])
+            cell.textLabel.text = @"Untitled";
+        
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"by %@",[[self.flickrData objectAtIndex: indexPath.row] objectForKey: FLICKR_PHOTO_OWNER]];
     }
     
     return cell;

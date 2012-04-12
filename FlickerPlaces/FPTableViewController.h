@@ -8,8 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@interface FlickerPlacesTableViewController : UITableViewController
+@interface FPTableViewController : UITableViewController
 
 @property (strong, nonatomic) NSArray * flickrData; 
+
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *refreshButton;
+
+- (IBAction)refreshButtonPressed:(UIBarButtonItem *)sender;
 
 @end

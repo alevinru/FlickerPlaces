@@ -35,6 +35,10 @@
                     self.scrollImageView.maximumZoomScale = 1.0;
                     self.scrollImageView.contentSize = self.imageView.frame.size;
                     
+                    //NSLog(@"%@ image size: %f, %f", NSStringFromSelector(_cmd), image.size.width, image.size.height);
+                    //NSLog(@"%@ imageView bounds: %f, %f", NSStringFromSelector(_cmd), self.imageView.bounds.size.width, self.imageView.bounds.size.height);
+                    //NSLog(@"%@ scrollView bounds: %f, %f", NSStringFromSelector(_cmd), self.scrollImageView.bounds.size.width, self.scrollImageView.bounds.size.height);
+                    
                     self.imageView.frame = CGRectMake(0, 0, self.imageView.image.size.width, self.imageView.image.size.height);
 
                     CGFloat xScale = self.scrollImageView.bounds.size.width / self.imageView.frame.size.width;
@@ -62,10 +66,13 @@
     }
 }
 
+/*
 - (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(float)scale {
+    NSLog(@"%@ imageView scale: %f", NSStringFromSelector(_cmd), scale);
     NSLog(@"%@ imageView frame: %f, %f", NSStringFromSelector(_cmd), self.imageView.frame.size.width, self.imageView.frame.size.height);
     NSLog(@"%@ scrollView contentSize: %f, %f", NSStringFromSelector(_cmd), self.scrollImageView.contentSize.width, self.scrollImageView.contentSize.height);
 }
+*/
 
 - (UIView *) viewForZoomingInScrollView:(UIScrollView *)scrollView {
     return self.imageView;

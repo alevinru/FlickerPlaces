@@ -6,11 +6,11 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="1181"/>
     </dependencies>
     <scenes>
-        <!--Flicker Places Table View Controller - Top Places-->
+        <!--Table View Controller - Top Places-->
         <scene sceneID="Qma-Ux-LWl">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="V6B-gk-Ce4" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tableViewController storyboardIdentifier="" title="Top Places" id="uD4-Yp-Xep" customClass="FlickerPlacesTableViewController" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="" title="Top Places" id="uD4-Yp-Xep" customClass="FPTableViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="DaR-ZD-9U9">
                         <rect key="frame" x="0.0" y="64" width="320" height="367"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -50,19 +50,26 @@
                             <outlet property="delegate" destination="uD4-Yp-Xep" id="umG-zF-dtO"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Choose a place" id="Umc-5y-QhO"/>
+                    <navigationItem key="navigationItem" title="Choose a place" id="Umc-5y-QhO">
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="Rd8-Bm-KEW">
+                            <connections>
+                                <action selector="refreshButtonPressed:" destination="uD4-Yp-Xep" id="VDw-jB-qJe"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
+                        <outlet property="refreshButton" destination="Rd8-Bm-KEW" id="nhs-Dg-EPJ"/>
                         <segue destination="XOq-xR-Kf3" kind="push" identifier="Show place detail" id="nnr-2l-7jT"/>
                     </connections>
                 </tableViewController>
             </objects>
             <point key="canvasLocation" x="721" y="-551"/>
         </scene>
-        <!--Flicker Places Table View Controller - Place photos-->
+        <!--Table View Controller - Place photos-->
         <scene sceneID="ajh-v8-kL7">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wqU-zB-bu8" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tableViewController title="Place photos" id="EAq-pG-Qaa" customClass="FlickerPlacesTableViewController" sceneMemberID="viewController">
+                <tableViewController title="Place photos" id="EAq-pG-Qaa" customClass="FPTableViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="6X3-zn-K8e">
                         <rect key="frame" x="0.0" y="64" width="320" height="367"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -247,13 +254,13 @@
             </objects>
             <point key="canvasLocation" x="-349" y="-47"/>
         </scene>
-        <!--Flicker Places Table View Controller - Recent Photos-->
+        <!--Table View Controller - Recent Photos-->
         <scene sceneID="AmC-9z-ul2">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6YY-iX-g9e" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tableViewController storyboardIdentifier="recentGeoreferencedPhotos" title="Recent Photos" id="J25-fc-Xd1" customClass="FlickerPlacesTableViewController" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="recentGeoreferencedPhotos" title="Recent Photos" id="J25-fc-Xd1" customClass="FPTableViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="IDI-HB-0Hl">
-                        <rect key="frame" x="0.0" y="64" width="320" height="367"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="372"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -291,7 +298,15 @@
                             <outlet property="delegate" destination="J25-fc-Xd1" id="SAj-bQ-b6E"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Recent Photos" id="WVc-a4-nsh"/>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" title="Recent Photos" id="WVc-a4-nsh">
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="RM0-WU-mVh">
+                            <connections>
+                                <action selector="refreshButtonPressed:" destination="J25-fc-Xd1" id="6We-SO-Dui"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                 </tableViewController>
             </objects>
             <point key="canvasLocation" x="721" y="356"/>
@@ -302,19 +317,20 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TC3-Cb-apO" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController id="Z6g-lK-vb8" customClass="ImageViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="aes-91-IVL">
-                        <rect key="frame" x="0.0" y="64" width="320" height="367"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="372"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="S2g-Gs-7fx">
-                                <rect key="frame" x="-20" y="-20" width="360" height="407"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="372"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
-                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" hidesWhenStopped="YES" animating="YES" style="gray" id="k2B-ml-gD4">
-                                        <rect key="frame" x="170" y="194" width="20" height="20"/>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" hidesWhenStopped="YES" animating="YES" style="whiteLarge" id="k2B-ml-gD4">
+                                        <rect key="frame" x="142" y="165" width="37" height="37"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="color" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                     </activityIndicatorView>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="aad-qD-sTR">
-                                        <rect key="frame" x="20" y="20" width="320" height="367"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="372"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     </imageView>
                                 </subviews>
@@ -382,12 +398,40 @@
     <resources>
         <image name="android-home.png" width="30" height="30"/>
     </resources>
+    <classes>
+        <class className="FPPlaceDetailsViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/FPPlaceDetailsViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="countChange:" candidateClass="UIStepper"/>
+                <relationship kind="outlet" name="countCell" candidateClass="UITableViewCell"/>
+                <relationship kind="outlet" name="countStepper" candidateClass="UIStepper"/>
+                <relationship kind="outlet" name="countTextField" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="switchCell" candidateClass="UITableViewCell"/>
+                <relationship kind="outlet" name="titleCell" candidateClass="UITableViewCell"/>
+            </relationships>
+        </class>
+        <class className="FPTableViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/FPTableViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="refreshButtonPressed:" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="refreshButton" candidateClass="UIBarButtonItem"/>
+            </relationships>
+        </class>
+        <class className="ImageViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ImageViewController.h"/>
+            <relationships>
+                <relationship kind="outlet" name="activityIndicator" candidateClass="UIActivityIndicatorView"/>
+                <relationship kind="outlet" name="imageView" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="scrollImageView" candidateClass="UIScrollView"/>
+            </relationships>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="BNV-h6-TJb"/>
+        <segue reference="mPf-vb-ZYP"/>
     </inferredMetricsTieBreakers>
 </document>
