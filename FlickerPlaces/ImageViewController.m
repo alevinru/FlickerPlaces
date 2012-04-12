@@ -17,6 +17,7 @@
 @synthesize imageView = _imageView;
 @synthesize activityIndicator = _activityIndicator;
 @synthesize imageURL = _imageURL;
+@synthesize scrollImageView = _scrollImageView;
 
 - (void)loadImage
 {
@@ -31,6 +32,15 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.activityIndicator stopAnimating];
                     self.imageView.image = image;
+                    self.scrollImageView.maximumZoomScale = 1.0;
+                    self.scrollImageView.contentSize = self.imageView.frame.size;
+                    
+                    self.imageView.frame = CGRectMake(0, 0, self.imageView.image.size.width, self.imageView.image.size.height);
+
+                    CGFloat xScale = self.scrollImageView.bounds.size.width / self.imageView.frame.size.width;
+                    CGFloat yScale = self.scrollImageView.bounds.size.height / self.imageView.frame.size.height;
+                    
+                    self.scrollImageView.zoomScale = self.scrollImageView.minimumZoomScale = MAX(yScale, xScale);            
                 });
             });
             dispatch_release(imageDownloadQ);
@@ -52,6 +62,15 @@
     }
 }
 
+- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(float)scale {
+    NSLog(@"%@ imageView frame: %f, %f", NSStringFromSelector(_cmd), self.imageView.frame.size.width, self.imageView.frame.size.height);
+    NSLog(@"%@ scrollView contentSize: %f, %f", NSStringFromSelector(_cmd), self.scrollImageView.contentSize.width, self.scrollImageView.contentSize.height);
+}
+
+- (UIView *) viewForZoomingInScrollView:(UIScrollView *)scrollView {
+    return self.imageView;
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
@@ -65,9 +84,9 @@
 
 - (void)viewDidUnload
 {
-    self.imageView = nil;
-    
+    [self setImageView: nil];
     [self setActivityIndicator:nil];
+    [self setScrollImageView:nil];
     
     [super viewDidUnload];
 }

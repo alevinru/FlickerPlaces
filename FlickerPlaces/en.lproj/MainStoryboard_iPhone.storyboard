@@ -305,7 +305,7 @@
                         <rect key="frame" x="0.0" y="64" width="320" height="367"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" maximumZoomScale="5" id="S2g-Gs-7fx">
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="S2g-Gs-7fx">
                                 <rect key="frame" x="-20" y="-20" width="360" height="407"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
@@ -313,11 +313,14 @@
                                         <rect key="frame" x="170" y="194" width="20" height="20"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </activityIndicatorView>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" id="aad-qD-sTR">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="aad-qD-sTR">
                                         <rect key="frame" x="20" y="20" width="320" height="367"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     </imageView>
                                 </subviews>
+                                <connections>
+                                    <outlet property="delegate" destination="Z6g-lK-vb8" id="jGN-3N-eUU"/>
+                                </connections>
                             </scrollView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -326,6 +329,7 @@
                     <connections>
                         <outlet property="activityIndicator" destination="k2B-ml-gD4" id="aM2-eg-Dv3"/>
                         <outlet property="imageView" destination="aad-qD-sTR" id="Hzq-eq-aYu"/>
+                        <outlet property="scrollImageView" destination="S2g-Gs-7fx" id="DSw-be-D5M"/>
                     </connections>
                 </viewController>
             </objects>
@@ -378,35 +382,12 @@
     <resources>
         <image name="android-home.png" width="30" height="30"/>
     </resources>
-    <classes>
-        <class className="FPPlaceDetailsViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/FPPlaceDetailsViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="countChange:" candidateClass="UIStepper"/>
-                <relationship kind="outlet" name="countCell" candidateClass="UITableViewCell"/>
-                <relationship kind="outlet" name="countStepper" candidateClass="UIStepper"/>
-                <relationship kind="outlet" name="countTextField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="switchCell" candidateClass="UITableViewCell"/>
-                <relationship kind="outlet" name="titleCell" candidateClass="UITableViewCell"/>
-            </relationships>
-        </class>
-        <class className="FlickerPlacesTableViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/FlickerPlacesTableViewController.h"/>
-        </class>
-        <class className="ImageViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ImageViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="activityIndicator" candidateClass="UIActivityIndicatorView"/>
-                <relationship kind="outlet" name="imageView" candidateClass="UIImageView"/>
-            </relationships>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="mPf-vb-ZYP"/>
+        <segue reference="BNV-h6-TJb"/>
     </inferredMetricsTieBreakers>
 </document>
