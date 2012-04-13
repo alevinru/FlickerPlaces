@@ -10,7 +10,9 @@
 
 @interface FPTableViewController : UITableViewController
 
-@property (strong, nonatomic) NSArray * flickrData; 
+@property (strong, nonatomic) NSArray * flickrData;
+
+@property (strong, nonatomic) NSDictionary * flickrPlace;
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *refreshButton;
 

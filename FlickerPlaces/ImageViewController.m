@@ -44,7 +44,8 @@
                     CGFloat xScale = self.scrollImageView.bounds.size.width / self.imageView.frame.size.width;
                     CGFloat yScale = self.scrollImageView.bounds.size.height / self.imageView.frame.size.height;
                     
-                    self.scrollImageView.zoomScale = self.scrollImageView.minimumZoomScale = MAX(yScale, xScale);            
+                    self.scrollImageView.minimumZoomScale = MIN(yScale, xScale);
+                    self.scrollImageView.zoomScale = MAX(yScale, xScale);
                 });
             });
             dispatch_release(imageDownloadQ);

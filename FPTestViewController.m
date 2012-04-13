@@ -41,7 +41,7 @@
 }
 
 - (IBAction)callButtonPressed:(UIButton *)sender {
-    NSString *phoneNumber = @"bria://418@hqpbx0.unact.ru";
+    NSString *phoneNumber = @"cpctel://423";
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:phoneNumber]];
 }
 @end

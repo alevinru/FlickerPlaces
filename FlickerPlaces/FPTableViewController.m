@@ -23,6 +23,7 @@
 
 @synthesize flickrData = _flickrData;
 @synthesize refreshButton = _refreshButton;
+@synthesize flickrPlace = _flickrPlace;
 
 - (NSArray *) flickrData {
     return _flickrData ? _flickrData : (_flickrData = [[NSArray alloc] init]);
@@ -30,9 +31,18 @@
 
 - (IBAction)refreshButtonPressed:(UIBarButtonItem *)sender {
     
-    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    UIActivityIndicatorView *spinner = [UIActivityIndicatorView alloc];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:spinner];
+    if (sender) {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[spinner initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleGray]];
+    }
+    else {
+        spinner = [spinner initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        spinner.frame = self.tableView.frame;
+        spinner.color = [UIColor darkGrayColor];
+        
+        [self.tableView.superview insertSubview: spinner aboveSubview: self.tableView];
+    }
     
     [spinner startAnimating];
     
@@ -41,7 +51,12 @@
         [self loadData];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
-            self.navigationItem.rightBarButtonItem = sender;
+            if (sender)
+                self.navigationItem.rightBarButtonItem = sender;
+            else {
+                [spinner stopAnimating];
+                [spinner removeFromSuperview];
+            }
         });
     });
     
@@ -49,10 +64,15 @@
 }
 
 - (void) loadData {
+
     if ([self.title isEqualToString: TOP_PLACES_VIEW_TITLE])
         self.flickrData = [FlickrFetcher topPlaces];
     else if ([self.title isEqualToString: RECENT_PHOTOS_VIEW_TITLE])
         self.flickrData = [FlickrFetcher recentGeoreferencedPhotos];
+    else if (self.flickrPlace)
+        self.flickrData = [FlickrFetcher photosInPlace: self.flickrPlace 
+                                            maxResults: 50]
+    ;
 
 }
 
@@ -66,7 +86,7 @@
     if ([segue.identifier isEqualToString: @"Show place detail"])
         [dvc setDatasource: fclickrObject];
     else if ([segue.identifier isEqualToString: @"Show photos from the place"])
-        [dvc setFlickrData: [FlickrFetcher photosInPlace: fclickrObject maxResults: 20]];
+        [dvc setFlickrPlace: fclickrObject];
     else if ([segue.identifier isEqualToString: @"Show the photo"])
         [dvc setImageURL: [FlickrFetcher urlForPhoto: fclickrObject format: FlickrPhotoFormatLarge]];
     
@@ -87,6 +107,10 @@
 
 #pragma mark - View lifecycle
 
+- (void) viewDidAppear:(BOOL)animated {
+    if (![[self flickrData] count])
+        [self refreshButtonPressed: nil];
+}
 
 - (void)viewDidLoad
 {
