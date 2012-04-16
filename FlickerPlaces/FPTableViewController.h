@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+#define TOP_PLACES_VIEW_TITLE @"Top Places"
+#define RECENT_PHOTOS_VIEW_TITLE @"Recent Photos"
+
+
 @interface FPTableViewController : UITableViewController
 
 @property (strong, nonatomic) NSArray * flickrData;

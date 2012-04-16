@@ -9,13 +9,12 @@
 #import "FPTableViewController.h"
 #import "FlickrFetcher.h"
 #import "FPPlaceDetailsViewController.h"
-
+#import "FPIdentifiableCell.h"
 #import "ImageViewController.h"
 
-#define TOP_PLACES_VIEW_TITLE @"Top Places"
-#define RECENT_PHOTOS_VIEW_TITLE @"Recent Photos"
-
 @interface FPTableViewController ()
+
+@property (strong, nonatomic) NSMutableDictionary * thumbnails;
 
 @end
 
@@ -24,19 +23,19 @@
 @synthesize flickrData = _flickrData;
 @synthesize refreshButton = _refreshButton;
 @synthesize flickrPlace = _flickrPlace;
+@synthesize thumbnails = _thumbnails;
 
 - (NSArray *) flickrData {
     return _flickrData ? _flickrData : (_flickrData = [[NSArray alloc] init]);
 }
 
-- (IBAction)refreshButtonPressed:(UIBarButtonItem *)sender {
+- (IBAction)refreshButtonPressed:(UIBarButtonItem *)theButton {
     
     UIActivityIndicatorView *spinner = [UIActivityIndicatorView alloc];
     
-    if (sender) {
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[spinner initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleGray]];
-    }
-    else {
+    if (theButton) {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[spinner initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleWhite]];
+    } else {
         spinner = [spinner initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
         spinner.frame = self.tableView.frame;
         spinner.color = [UIColor darkGrayColor];
@@ -47,12 +46,13 @@
     [spinner startAnimating];
     
     dispatch_queue_t downloadQueue = dispatch_queue_create("flickr downloader", NULL);
+    
     dispatch_async(downloadQueue, ^{
         [self loadData];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
-            if (sender)
-                self.navigationItem.rightBarButtonItem = sender;
+            if (theButton)
+                self.navigationItem.rightBarButtonItem = theButton;
             else {
                 [spinner stopAnimating];
                 [spinner removeFromSuperview];
@@ -65,6 +65,8 @@
 
 - (void) loadData {
 
+    self.thumbnails = [[NSMutableDictionary alloc] init];
+    
     if ([self.title isEqualToString: TOP_PLACES_VIEW_TITLE])
         self.flickrData = [FlickrFetcher topPlaces];
     else if ([self.title isEqualToString: RECENT_PHOTOS_VIEW_TITLE])
@@ -153,25 +155,57 @@
 {
     NSString *cellIdentifier = self.title;
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    FPIdentifiableCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+
+    __block NSMutableDictionary * flickrObject = [self.flickrData objectAtIndex: indexPath.row];
+    
     
     if (!cell) {
         NSLog(@"No cell for %@", cellIdentifier);
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier: cellIdentifier];
+        cell = [[FPIdentifiableCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier: cellIdentifier];
         cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
     }
     
+    
     if ([cellIdentifier isEqualToString: TOP_PLACES_VIEW_TITLE]) {
-        cell.textLabel.text = [[self.flickrData objectAtIndex: indexPath.row] objectForKey: FLICKR_PLACE_NAME];
+        cell.textLabel.text = [flickrObject objectForKey: FLICKR_PLACE_NAME];
         
-        cell.detailTextLabel.text = [NSString stringWithFormat: @"%@ photos", [[self.flickrData objectAtIndex: indexPath.row] objectForKey: FLICKR_PLACE_PHOTO_COUNT]];
+        cell.detailTextLabel.text = [NSString stringWithFormat: @"%@ photos", [flickrObject objectForKey: FLICKR_PLACE_PHOTO_COUNT]];
     } else {
-        cell.textLabel.text = [[self.flickrData objectAtIndex: indexPath.row] objectForKey: FLICKR_PHOTO_TITLE];
+        
+        NSString * photoId = [flickrObject objectForKey: FLICKR_PHOTO_ID];
+        
+        cell.identifier = [photoId copy];
+        
+        cell.textLabel.text = [flickrObject objectForKey: FLICKR_PHOTO_TITLE];
         
         if ([cell.textLabel.text isEqualToString:@""])
             cell.textLabel.text = @"Untitled";
         
-        cell.detailTextLabel.text = [NSString stringWithFormat:@"by %@",[[self.flickrData objectAtIndex: indexPath.row] objectForKey: FLICKR_PHOTO_OWNER]];
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"by %@",[flickrObject objectForKey: FLICKR_PHOTO_OWNER]];
+        
+        cell.imageView.image = [self.thumbnails objectForKey: photoId];
+        
+        if (!cell.imageView.image)
+            cell.imageView.image = [UIImage imageNamed: @"Placeholder.png"]
+        ;
+        
+        
+        dispatch_queue_t downloadQueue = dispatch_queue_create("flickr thumbnailer", NULL);
+        
+        dispatch_async(downloadQueue, ^{
+            UIImage * thumbnail = [[UIImage alloc] initWithData: [NSData dataWithContentsOfURL: [FlickrFetcher urlForPhoto:flickrObject format: FlickrPhotoFormatSquare]]];
+            
+            [self.thumbnails setObject: thumbnail forKey: photoId];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if ([cell.identifier isEqual:  photoId])
+                    [[cell imageView] setImage: thumbnail];
+                
+            });
+        });
+        
+        dispatch_release(downloadQueue);
     }
     
     return cell;
