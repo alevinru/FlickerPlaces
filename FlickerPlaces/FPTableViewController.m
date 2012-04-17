@@ -157,7 +157,7 @@
     
     FPIdentifiableCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
 
-    __block NSMutableDictionary * flickrObject = [self.flickrData objectAtIndex: indexPath.row];
+    NSMutableDictionary * flickrObject = [self.flickrData objectAtIndex: indexPath.row];
     
     
     if (!cell) {

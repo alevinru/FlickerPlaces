@@ -7,6 +7,7 @@
 //
 
 #import "FPAppDelegate.h"
+#import "FPCache.h"
 
 @implementation FPAppDelegate
 
@@ -15,6 +16,9 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    
+    [FPCache initCaches];
+    
     return YES;
 }
 							

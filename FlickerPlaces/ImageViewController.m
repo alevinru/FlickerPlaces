@@ -6,6 +6,7 @@
 //
 
 #import "ImageViewController.h"
+#import "FPCache.h"
 
 @interface ImageViewController()
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
@@ -28,7 +29,7 @@
             [self.activityIndicator startAnimating];
             
             dispatch_async(imageDownloadQ, ^{
-                UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:self.imageURL]];
+                UIImage *image = [UIImage imageWithData:[FPCache dataWithContentsOfURL:self.imageURL]];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.activityIndicator stopAnimating];
                     self.imageView.image = image;

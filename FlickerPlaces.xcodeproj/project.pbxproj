@@ -28,6 +28,7 @@
 		D95C33B71536EEAF00A36EDD /* social-flickr-box-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D95C33B61536EEAF00A36EDD /* social-flickr-box-icon.png */; };
 		D96859DB153CA81000785164 /* Placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = D96859DA153CA81000785164 /* Placeholder.png */; };
 		D96859E1153CAED200785164 /* FPIdentifiableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D96859E0153CAED200785164 /* FPIdentifiableCell.m */; };
+		D96859E9153D761100785164 /* FPCache.m in Sources */ = {isa = PBXBuildFile; fileRef = D96859E8153D761100785164 /* FPCache.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -74,6 +75,8 @@
 		D96859DA153CA81000785164 /* Placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Placeholder.png; sourceTree = "<group>"; };
 		D96859DF153CAED200785164 /* FPIdentifiableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FPIdentifiableCell.h; sourceTree = "<group>"; };
 		D96859E0153CAED200785164 /* FPIdentifiableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPIdentifiableCell.m; sourceTree = "<group>"; };
+		D96859E7153D761100785164 /* FPCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FPCache.h; sourceTree = "<group>"; };
+		D96859E8153D761100785164 /* FPCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPCache.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,6 +139,8 @@
 		D945F653153462E400BB3EF7 /* FlickerPlaces */ = {
 			isa = PBXGroup;
 			children = (
+				D96859E7153D761100785164 /* FPCache.h */,
+				D96859E8153D761100785164 /* FPCache.m */,
 				D96859DF153CAED200785164 /* FPIdentifiableCell.h */,
 				D96859E0153CAED200785164 /* FPIdentifiableCell.m */,
 				D945F65F153462E400BB3EF7 /* MainStoryboard_iPhone.storyboard */,
@@ -313,6 +318,7 @@
 				D945F69B1534A43400BB3EF7 /* FPTableViewController.m in Sources */,
 				D95C33AE1536BE1600A36EDD /* FPTestViewController.m in Sources */,
 				D96859E1153CAED200785164 /* FPIdentifiableCell.m in Sources */,
+				D96859E9153D761100785164 /* FPCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
