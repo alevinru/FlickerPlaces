@@ -14,6 +14,6 @@
 
     @property (weak, nonatomic) IBOutlet UIScrollView *scrollImageView;
 
-    @property (weak, nonatomic) id <CachedDataDelegate> delegate;
+    @property (weak, nonatomic) id <CachedDataDelegate> imageSource;
 
 @end

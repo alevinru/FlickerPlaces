@@ -19,7 +19,7 @@
     @synthesize activityIndicator = _activityIndicator;
     @synthesize imageURL = _imageURL;
     @synthesize scrollImageView = _scrollImageView;
-    @synthesize delegate = _delegate;
+    @synthesize imageSource = _delegate;
 
 - (void)loadImage
 {
@@ -30,7 +30,7 @@
             [self.activityIndicator startAnimating];
             
             dispatch_async(imageDownloadQ, ^{
-                UIImage *image = [UIImage imageWithData:[self.delegate dataWithContentsOfURL:self.imageURL]];
+                UIImage *image = [UIImage imageWithData:[self.imageSource dataWithContentsOfURL:self.imageURL]];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.activityIndicator stopAnimating];
                     self.imageView.image = image;

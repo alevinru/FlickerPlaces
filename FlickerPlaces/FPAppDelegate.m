@@ -12,8 +12,6 @@
 
 @interface FPAppDelegate()
 
-@property (strong, nonatomic) FPCache *imageCache;
-
 @end
 
 

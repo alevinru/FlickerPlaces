@@ -11,6 +11,7 @@
 #import "FPPlaceDetailsViewController.h"
 #import "FPIdentifiableCell.h"
 #import "ImageViewController.h"
+#import "FPAppDelegate.h"
 
 @interface FPTableViewController ()
 
@@ -27,6 +28,10 @@
 
 - (NSArray *) flickrData {
     return _flickrData ? _flickrData : (_flickrData = [[NSArray alloc] init]);
+}
+
+-(IBAction) editPressed:(UIBarButtonItem *)sender {
+    [self.tableView setEditing: !self.tableView.editing];
 }
 
 - (IBAction)refreshButtonPressed:(UIBarButtonItem *)theButton {
@@ -63,6 +68,7 @@
     dispatch_release(downloadQueue);    
 }
 
+
 - (void) loadData {
 
     self.thumbnails = [[NSMutableDictionary alloc] init];
@@ -73,8 +79,14 @@
         self.flickrData = [FlickrFetcher recentGeoreferencedPhotos];
     else if (self.flickrPlace)
         self.flickrData = [FlickrFetcher photosInPlace: self.flickrPlace 
-                                            maxResults: 50]
-    ;
+                                            maxResults: 50];
+    else if ([self.title isEqualToString: FP_CACHED_PHOTOS]) {
+        NSMutableArray * reverseCached = [[NSMutableArray alloc] init];
+        for (id obj in [[[(FPAppDelegate*) [UIApplication sharedApplication].delegate imageCache] getCacheFiles] reverseObjectEnumerator]) {
+            [reverseCached addObject: obj];
+        }
+        self.flickrData = [reverseCached copy];
+    };
 
 }
 
@@ -82,6 +94,7 @@
 -(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
     NSDictionary * fclickrObject = [[self.flickrData objectAtIndex: [self.tableView indexPathForCell: sender].row] copy];
+    FPAppDelegate * fp = (FPAppDelegate *) [[UIApplication sharedApplication] delegate];
     
     id dvc = [segue destinationViewController];
     
@@ -91,8 +104,12 @@
         [dvc setFlickrPlace: fclickrObject];
     else if ([segue.identifier isEqualToString: @"Show the photo"]){
         [dvc setImageURL: [FlickrFetcher urlForPhoto: fclickrObject format: FlickrPhotoFormatLarge]];
-        [dvc setDelegate: [[UIApplication sharedApplication] delegate]];
+        [dvc setImageSource: fp];
+    } else if ([segue.identifier isEqualToString: @"Show a cached photo"]){
+        [dvc setImageURL: [NSURL URLWithString: [fclickrObject objectForKey: @"name"]]];
+        [dvc setImageSource: fp];
     }
+
     
     //NSLog(@"%@: %@", NSStringFromSelector(_cmd), segue.identifier);
     
@@ -112,7 +129,7 @@
 #pragma mark - View lifecycle
 
 - (void) viewDidAppear:(BOOL)animated {
-    if (![[self flickrData] count])
+    if (![[self flickrData] count] || [self.title isEqualToString: FP_CACHED_PHOTOS])
         [self refreshButtonPressed: nil];
 }
 
@@ -173,6 +190,14 @@
         cell.textLabel.text = [flickrObject objectForKey: FLICKR_PLACE_NAME];
         
         cell.detailTextLabel.text = [NSString stringWithFormat: @"%@ photos", [flickrObject objectForKey: FLICKR_PLACE_PHOTO_COUNT]];
+    } else if ([cellIdentifier isEqualToString: FP_CACHED_PHOTOS]) {
+        
+        cell.textLabel.text = [flickrObject objectForKey: @"name"];
+        
+        cell.detailTextLabel.text = [NSString stringWithFormat: @"%@ bytes", [[flickrObject objectForKey: @"size"] stringValue]];
+        
+        //cell.imageView.image = ?
+        
     } else {
         
         NSString * photoId = [flickrObject objectForKey: FLICKR_PHOTO_ID];

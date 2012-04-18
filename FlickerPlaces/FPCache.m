@@ -23,6 +23,11 @@
 @synthesize totalSize = _totalSize;
 
 
+- (NSArray *) getCacheFiles {
+    return [self.cacheFiles copy];
+}
+
+
 - (id) init {
     
     self = [super init];
@@ -142,8 +147,7 @@
         
         NSNumber * size = [NSNumber numberWithInt: result.length];
         
-        if (self.totalSize + [size intValue] > MAX_CACHE_SIZE)
-            [self resizeCacheToFreeSpaceOf: size];
+        [self resizeCacheToFreeSpaceOf: size];
         
         BOOL wroteFile = [result writeToURL: path atomically: YES];
         

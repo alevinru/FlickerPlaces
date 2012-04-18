@@ -16,4 +16,6 @@
     
     - (NSData*) dataWithContentsOfURL: (NSURL*) url;
 
+    @property (strong, nonatomic) FPCache *imageCache;
+
 @end

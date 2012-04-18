@@ -14,4 +14,6 @@
 
     - (id) init;
 
+    - (NSArray *) getCacheFiles;
+
 @end

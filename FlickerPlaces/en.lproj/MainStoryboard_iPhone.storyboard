@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="1.1" toolsVersion="2182" systemVersion="11D50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="4">
     <dependencies>
+        <deployment defaultVersion="1296" identifier="iOS"/>
         <development defaultVersion="4200" identifier="xcode"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="1181"/>
     </dependencies>
@@ -383,13 +384,13 @@
         <scene sceneID="6Sj-Fb-SmS">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rJu-1i-YjQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tableViewController title="Cached photos" id="iOi-Ku-8CL" sceneMemberID="viewController">
+                <tableViewController title="Cached photos" id="iOi-Ku-8CL" customClass="FPTableViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="vXa-sO-dWX">
                         <rect key="frame" x="0.0" y="64" width="320" height="367"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cached photo" textLabel="Yc9-1I-Tz1" detailTextLabel="563-iN-Wii" style="IBUITableViewCellStyleSubtitle" id="Cab-qP-pvj">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cached photos" textLabel="Yc9-1I-Tz1" detailTextLabel="563-iN-Wii" style="IBUITableViewCellStyleSubtitle" id="Cab-qP-pvj">
                                 <rect key="frame" x="0.0" y="22" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -413,6 +414,9 @@
                                     </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
+                                <connections>
+                                    <segue destination="Z6g-lK-vb8" kind="push" identifier="Show a cached photo" id="ej0-Ly-ZZN"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -420,7 +424,13 @@
                             <outlet property="delegate" destination="iOi-Ku-8CL" id="Qzn-F8-7vZ"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Cached photos" id="X3V-4S-gyu"/>
+                    <navigationItem key="navigationItem" title="Cached photos" id="X3V-4S-gyu">
+                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="DZd-4M-wC2">
+                            <connections>
+                                <action selector="editPressed:" destination="iOi-Ku-8CL" id="7uA-Xw-Q4F"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
             </objects>
             <point key="canvasLocation" x="721" y="981"/>
@@ -450,7 +460,7 @@
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tas-bq-lY9" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController title="Cache" id="mkv-VO-dPM" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="1xX-1Z-sls"/>
+                    <tabBarItem key="tabBarItem" systemItem="downloads" id="1xX-1Z-sls"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="mU0-lX-4hC">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -474,6 +484,6 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="BNV-h6-TJb"/>
+        <segue reference="ej0-Ly-ZZN"/>
     </inferredMetricsTieBreakers>
 </document>
