@@ -7,84 +7,91 @@
 //
 
 #import "FPCache.h"
-#define MAX_CACHE_SIZE 3000000
+#define MAX_CACHE_SIZE 10000000
 
 @interface FPCache()
 
+@property (strong) NSMutableArray * cacheFiles;
+@property (strong) NSURL * imagesLocation;
+@property NSUInteger totalSize;
 @end
 
 @implementation FPCache
 
-static NSMutableArray * _cacheFiles;
-static NSURL * _imagesLocation;
-static uint _sizeTotal;
+@synthesize cacheFiles = _cacheFiles;
+@synthesize imagesLocation = _imagesLocation;
+@synthesize totalSize = _totalSize;
 
 
-+ (void) initCaches {
+- (id) init {
+    
+    self = [super init];
     
     NSFileManager * filer = [NSFileManager defaultManager];
     
     NSURL * url =  [filer URLForDirectory: NSCachesDirectory inDomain:NSUserDomainMask appropriateForURL: nil create:YES error:nil];
     
-    _cacheFiles = [[NSMutableArray alloc] init];
-    _imagesLocation = [url URLByAppendingPathComponent:@"images" isDirectory:YES];
-    _sizeTotal = 0;
+    self.cacheFiles = [[NSMutableArray alloc] init];
+    self.imagesLocation = [url URLByAppendingPathComponent: @"images" isDirectory:YES];
+    self.totalSize = 0;
     
-    BOOL isCreated = [filer createDirectoryAtURL: _imagesLocation withIntermediateDirectories:NO attributes: nil error:nil];
+    [filer createDirectoryAtURL: self.imagesLocation withIntermediateDirectories:NO attributes: nil error:nil];
     
-    NSLog(@"%@: %@ (created: %@)", NSStringFromSelector(_cmd), url, isCreated ? @"yes" : @"no");
-    
-    NSArray * keys = [NSArray arrayWithObjects: NSURLCreationDateKey, NSURLFileSizeKey, nil];
-    
-    NSArray * images = [filer contentsOfDirectoryAtURL: _imagesLocation includingPropertiesForKeys: keys options:NSDirectoryEnumerationSkipsHiddenFiles error: nil];
-    
-    NSNumber * size;        
-    NSDate * date;
+    NSArray * images = [filer 
+                        contentsOfDirectoryAtURL: self.imagesLocation
+                      includingPropertiesForKeys: [NSArray arrayWithObjects: NSURLCreationDateKey, NSURLFileSizeKey, nil]
+                                         options:NSDirectoryEnumerationSkipsHiddenFiles
+                                           error: nil
+    ];
     
     for (NSURL * image in images) {
         
-        BOOL isSized = [image getResourceValue: &size forKey:NSURLFileSizeKey error:nil];
+        NSNumber * size;        
+        NSDate * date;
         
-        BOOL whenCreated = [image getResourceValue: &date forKey: NSURLCreationDateKey error:nil];
+        [image getResourceValue: &size forKey:NSURLFileSizeKey error:nil];
+        [image getResourceValue: &date forKey: NSURLCreationDateKey error:nil];
 
-        NSLog(@"%@: image found: %@ of %d bytes at %@ (%d %d)", NSStringFromSelector(_cmd), image, [size intValue], date, isSized, whenCreated );
+        self.totalSize += [size intValue];
         
-        _sizeTotal += [size intValue];
-        
-        [_cacheFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: [image lastPathComponent], @"name", size , @"size", date, @"lastAccess", nil]];
+        [self.cacheFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: [image lastPathComponent], @"name", size , @"size", date, @"lastAccess", nil]];
         
     }
     
-    [_cacheFiles sortUsingComparator: ^(id obj1, id obj2) {
+    [self.cacheFiles sortUsingComparator: ^(id obj1, id obj2) {
         NSDate * d1 = [obj1 objectForKey: @"lastAccess"];
         NSDate * d2 = [obj2 objectForKey: @"lastAccess"];
         
         return [d1 compare: d2];
     }];
     
-    for (NSDictionary * image in _cacheFiles) {
-        NSLog(@"%@: image (size, ts): %@ (%d, %@)", NSStringFromSelector(_cmd), [image objectForKey: @"name"], [[image objectForKey: @"size"] intValue], [image objectForKey: @"lastAccess"]);
+    for (NSDictionary * image in self.cacheFiles) {
+        NSLog(@"%@ image (size, ts): %@ (%d, %@)", NSStringFromSelector(_cmd), [image objectForKey: @"name"], [[image objectForKey: @"size"] intValue], [image objectForKey: @"lastAccess"]);
     }
     
+    NSLog(@"%@ images found total size: %d bytes", NSStringFromSelector(_cmd), self.totalSize);
     
-    NSLog(@"%@: images found total: %d bytes", NSStringFromSelector(_cmd), _sizeTotal);
+    return self;
     
 }
 
-+ (void) registerCachedObject: (NSString *) name ofSize: (NSNumber*) bytes {
-    [_cacheFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: name, @"name", bytes, @"size", [NSDate dateWithTimeIntervalSinceNow: 0], @"lastAccess", nil]];
-    _sizeTotal += [bytes intValue];
-    NSLog(@"%@ total cache size: %d", NSStringFromSelector(_cmd), _sizeTotal);
+- (void) registerCachedObject: (NSString *) name ofSize: (NSNumber*) bytes {
+
+    [self.cacheFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: name, @"name", bytes, @"size", [NSDate dateWithTimeIntervalSinceNow: 0], @"lastAccess", nil]];
+    self.totalSize += [bytes intValue];
+    
+    NSLog(@"%@ total cache size: %d", NSStringFromSelector(_cmd), self.totalSize);
+
 }
 
 
-+ (BOOL) resizeCacheToFreeSpaceOf: (NSNumber*) bytes {
+- (BOOL) resizeCacheToFreeSpaceOf: (NSNumber*) bytes {
     
     uint freedBytes = 0;
     
-    while ([bytes intValue] + _sizeTotal > MAX_CACHE_SIZE ) {
+    while ([bytes intValue] + self.totalSize > MAX_CACHE_SIZE ) {
         
-        NSDictionary * objectToEvict = [_cacheFiles objectAtIndex:0];
+        NSDictionary * objectToEvict = [self.cacheFiles objectAtIndex:0];
         NSNumber * size = [objectToEvict objectForKey: @"size"];
         NSString * name = [objectToEvict objectForKey: @"name"];
         
@@ -94,44 +101,40 @@ static uint _sizeTotal;
         
         NSLog(@"%@ removes: %@", NSStringFromSelector(_cmd), name);
         
-        [_cacheFiles removeObjectAtIndex: 0];
+        [self.cacheFiles removeObjectAtIndex: 0];
         
-        _sizeTotal -= [size intValue];
+        self.totalSize -= [size intValue];
         
-        [[NSFileManager defaultManager] removeItemAtURL: [_imagesLocation URLByAppendingPathComponent: name isDirectory:NO] error: nil];
+        [[NSFileManager defaultManager] removeItemAtURL: [self.imagesLocation URLByAppendingPathComponent: name isDirectory:NO] error: nil];
         
     }
     
-    NSLog(@"%@ total cache size: %d", NSStringFromSelector(_cmd), _sizeTotal);
+    NSLog(@"%@ total cache size: %d", NSStringFromSelector(_cmd), self.totalSize);
     
     return YES;
 
 }
 
-+ (NSArray *) cacheFiles {
-    
-    return _cacheFiles;
-    
-}
 
-
-+ (NSData*) dataWithContentsOfURL:(NSURL *)url {
+- (NSData*) dataWithContentsOfURL:(NSURL *)url {
     
-    NSURL * path = [_imagesLocation URLByAppendingPathComponent: url.lastPathComponent];
+    NSURL * path = [self.imagesLocation URLByAppendingPathComponent: url.lastPathComponent];
     
-    NSLog(@"%@: %@", NSStringFromSelector(_cmd), url);
+    NSLog(@"%@ %@", NSStringFromSelector(_cmd), url);
     
     NSData * result = [NSData dataWithContentsOfURL: path];
     
     if (result) {
         
-        NSUInteger cachedIndex = [_cacheFiles indexOfObjectPassingTest: ^(NSDictionary *item, NSUInteger idx, BOOL * stop) { return [[item objectForKey: @"name"] isEqualToString: url.lastPathComponent]; }
+        NSUInteger cachedIndex = [self.cacheFiles indexOfObjectPassingTest: ^(NSDictionary *item, NSUInteger idx, BOOL * stop) { return [[item objectForKey: @"name"] isEqualToString: url.lastPathComponent]; }
          ];
         
-        NSDictionary * obj = [_cacheFiles objectAtIndex: cachedIndex];
+        NSDictionary * obj = [self.cacheFiles objectAtIndex: cachedIndex];
         
-        [_cacheFiles removeObjectAtIndex: cachedIndex];
-        [_cacheFiles addObject: obj];
+        [self.cacheFiles removeObjectAtIndex: cachedIndex];
+        [self.cacheFiles addObject: obj];
+        
+        NSLog(@"%@ from cache at index: %d", NSStringFromSelector(_cmd), cachedIndex);
         
     } else {
         
@@ -139,19 +142,20 @@ static uint _sizeTotal;
         
         NSNumber * size = [NSNumber numberWithInt: result.length];
         
-        if (_sizeTotal + [size intValue] > MAX_CACHE_SIZE)
+        if (self.totalSize + [size intValue] > MAX_CACHE_SIZE)
             [self resizeCacheToFreeSpaceOf: size];
         
         BOOL wroteFile = [result writeToURL: path atomically: YES];
         
         if (wroteFile) [self registerCachedObject: path.lastPathComponent ofSize: size];
         
-        NSLog(@"%@: cached file: %@", NSStringFromSelector(_cmd), wroteFile ? @"yes" : @"no");
+        NSLog(@"%@ new file: %@", NSStringFromSelector(_cmd), wroteFile ? @"yes" : @"no");
         
     }
     
     return result;
     
 }
+
 
 @end

@@ -9,15 +9,31 @@
 #import "FPAppDelegate.h"
 #import "FPCache.h"
 
+
+@interface FPAppDelegate()
+
+@property (strong, nonatomic) FPCache *imageCache;
+
+@end
+
+
+
 @implementation FPAppDelegate
 
-@synthesize window = _window;
+@synthesize window = _window, imageCache = _imageCache;
+
+- (NSData*) dataWithContentsOfURL: (NSURL*) url {
+    
+    return [self.imageCache dataWithContentsOfURL: url];
+
+}
+
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
     
-    [FPCache initCaches];
+    self.imageCache = [[FPCache alloc] init];
     
     return YES;
 }

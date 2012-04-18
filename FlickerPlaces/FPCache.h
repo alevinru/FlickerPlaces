@@ -10,8 +10,8 @@
 
 @interface FPCache : NSObject
 
-+ (NSData*) dataWithContentsOfURL: (NSURL*) url;
+    - (NSData*) dataWithContentsOfURL: (NSURL*) url;
 
-+ (void) initCaches;
+    - (id) init;
 
 @end

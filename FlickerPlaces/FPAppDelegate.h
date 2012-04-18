@@ -7,9 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FPCache.h"
+#import "CachedDataDelegate.h"
 
-@interface FPAppDelegate : UIResponder <UIApplicationDelegate>
+@interface FPAppDelegate : UIResponder <UIApplicationDelegate, CachedDataDelegate>
 
-@property (strong, nonatomic) UIWindow *window;
+    @property (strong, nonatomic) UIWindow *window;
+    
+    - (NSData*) dataWithContentsOfURL: (NSURL*) url;
 
 @end

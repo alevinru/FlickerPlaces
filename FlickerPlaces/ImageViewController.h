@@ -6,11 +6,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CachedDataDelegate.h"
 
 @interface ImageViewController : UIViewController <UIScrollViewDelegate>
 
-@property (nonatomic, strong) NSURL *imageURL;
+    @property (nonatomic, strong) NSURL *imageURL;
 
-@property (weak, nonatomic) IBOutlet UIScrollView *scrollImageView;
+    @property (weak, nonatomic) IBOutlet UIScrollView *scrollImageView;
+
+    @property (weak, nonatomic) id <CachedDataDelegate> delegate;
 
 @end

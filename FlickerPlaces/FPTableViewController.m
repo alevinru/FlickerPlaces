@@ -89,8 +89,10 @@
         [dvc setDatasource: fclickrObject];
     else if ([segue.identifier isEqualToString: @"Show photos from the place"])
         [dvc setFlickrPlace: fclickrObject];
-    else if ([segue.identifier isEqualToString: @"Show the photo"])
+    else if ([segue.identifier isEqualToString: @"Show the photo"]){
         [dvc setImageURL: [FlickrFetcher urlForPhoto: fclickrObject format: FlickrPhotoFormatLarge]];
+        [dvc setDelegate: [[UIApplication sharedApplication] delegate]];
+    }
     
     //NSLog(@"%@: %@", NSStringFromSelector(_cmd), segue.identifier);
     

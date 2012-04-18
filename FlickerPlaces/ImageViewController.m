@@ -9,16 +9,17 @@
 #import "FPCache.h"
 
 @interface ImageViewController()
-@property (weak, nonatomic) IBOutlet UIImageView *imageView;
-@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
+    @property (weak, nonatomic) IBOutlet UIImageView *imageView;
+    @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 @end
 
 @implementation ImageViewController
 
-@synthesize imageView = _imageView;
-@synthesize activityIndicator = _activityIndicator;
-@synthesize imageURL = _imageURL;
-@synthesize scrollImageView = _scrollImageView;
+    @synthesize imageView = _imageView;
+    @synthesize activityIndicator = _activityIndicator;
+    @synthesize imageURL = _imageURL;
+    @synthesize scrollImageView = _scrollImageView;
+    @synthesize delegate = _delegate;
 
 - (void)loadImage
 {
@@ -29,7 +30,7 @@
             [self.activityIndicator startAnimating];
             
             dispatch_async(imageDownloadQ, ^{
-                UIImage *image = [UIImage imageWithData:[FPCache dataWithContentsOfURL:self.imageURL]];
+                UIImage *image = [UIImage imageWithData:[self.delegate dataWithContentsOfURL:self.imageURL]];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.activityIndicator stopAnimating];
                     self.imageView.image = image;
