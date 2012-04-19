@@ -16,4 +16,5 @@
 
     - (NSArray *) getCacheFiles;
 
+    - (NSUInteger) evictFromCache: (NSUInteger) atIndex ;
 @end

@@ -12,15 +12,17 @@
 #import "FPIdentifiableCell.h"
 #import "ImageViewController.h"
 #import "FPAppDelegate.h"
+#import "FlickrPhotoAnnotation.h"
 
 @interface FPTableViewController ()
 
 @property (strong, nonatomic) NSMutableDictionary * thumbnails;
-
+- (NSArray *)mapAnnotations;
 @end
 
 @implementation FPTableViewController
 
+@synthesize mapView = _mapView;
 @synthesize flickrData = _flickrData;
 @synthesize refreshButton = _refreshButton;
 @synthesize flickrPlace = _flickrPlace;
@@ -32,7 +34,21 @@
 
 -(IBAction) editPressed:(UIBarButtonItem *)sender {
     [self.tableView setEditing: !self.tableView.editing];
+    [sender setStyle: (self.tableView.editing ? UIBarButtonItemStyleDone : UIBarButtonItemStyleBordered)];
 }
+
+- (IBAction)presentationStyleChosen:(UISegmentedControl *)sender {
+    
+    [UIView transitionFromView: sender.selectedSegmentIndex == 1 ? self.tableView : self.mapView toView: sender.selectedSegmentIndex == 0 ? self.tableView : self.mapView duration: 1 options:UIViewAnimationOptionTransitionFlipFromLeft completion: ^(BOOL finished) {
+        NSLog(@"%@", NSStringFromSelector(_cmd));
+    }];
+    
+//    [self.tableView setHidden: sender.selectedSegmentIndex == 1];
+//    [self.mapView setHidden: sender.selectedSegmentIndex == 0];
+    NSLog(@"mapView superview: %@", NSStringFromClass([self.mapView.superview class]));
+    
+}
+
 
 - (IBAction)refreshButtonPressed:(UIBarButtonItem *)theButton {
     
@@ -100,9 +116,10 @@
     
     if ([segue.identifier isEqualToString: @"Show place detail"])
         [dvc setDatasource: fclickrObject];
-    else if ([segue.identifier isEqualToString: @"Show photos from the place"])
+    else if ([segue.identifier isEqualToString: @"Show photos from the place"]){
         [dvc setFlickrPlace: fclickrObject];
-    else if ([segue.identifier isEqualToString: @"Show the photo"]){
+        [[dvc navigationItem] setPrompt: [fclickrObject objectForKey: FLICKR_PLACE_NAME]];
+    } else if ([segue.identifier isEqualToString: @"Show the photo"]){
         [dvc setImageURL: [FlickrFetcher urlForPhoto: fclickrObject format: FlickrPhotoFormatLarge]];
         [dvc setImageSource: fp];
     } else if ([segue.identifier isEqualToString: @"Show a cached photo"]){
@@ -115,14 +132,17 @@
     
 }
 
-
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
+- (void) awakeFromNib {
+    if (self.mapView) {
+        // go to North America
+        MKCoordinateRegion newRegion;
+        newRegion.center.latitude = 57.37;
+        newRegion.center.longitude = -96.24;
+        newRegion.span.latitudeDelta = 28.49;
+        newRegion.span.longitudeDelta = 31.025;
+//        [self.mapView setFrame: self.tableView.frame];
+        [self.mapView setRegion:newRegion animated:NO];
     }
-    return self;
 }
 
 
@@ -139,7 +159,7 @@
 
     // Uncomment the following line to preserve selection between presentations.
     self.clearsSelectionOnViewWillAppear = NO;
-     
+    
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
@@ -147,6 +167,7 @@
 - (void)viewDidUnload
 {
     [self setRefreshButton:nil];
+    [self setMapView:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -247,19 +268,21 @@
 }
 */
 
-/*
-// Override to support editing the table view.
+
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        
+//        [[(FPAppDelegate*) [UIApplication sharedApplication].delegate imageCache] evictFromCache: [self.flickrData count];
+        
+//        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }   
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
     }   
 }
-*/
+
 
 /*
 // Override to support rearranging the table view.
@@ -296,5 +319,43 @@
      [self.navigationController pushViewController:detailViewController animated:YES];
      */
 }
+
+#pragma marm - Map view delegate
+
+- (void)mapView:(MKMapView *)map regionDidChangeAnimated:(BOOL)animated
+{
+    NSArray *oldAnnotations = self.mapView.annotations;
+    [self.mapView removeAnnotations:oldAnnotations];
+    
+    NSArray *newAnnotations = [self mapAnnotations];
+    [self.mapView addAnnotations:newAnnotations];
+
+}
+
+- (MKAnnotationView *)mapView:(MKMapView *)map viewForAnnotation:(id <MKAnnotation>)annotation
+{
+    static NSString *AnnotationViewID = @"annotationViewID";
+    
+    MKPinAnnotationView *annotationView =
+    (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:AnnotationViewID];
+    if (annotationView == nil)
+    {
+        annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:AnnotationViewID];
+    }
+    
+    annotationView.annotation = annotation;
+    
+    return annotationView;
+}
+
+- (NSArray *)mapAnnotations
+{
+    NSMutableArray *annotations = [NSMutableArray arrayWithCapacity:[self.flickrData count]];
+    for (NSDictionary *obj in self.flickrData) {
+        [annotations addObject:[FlickrPhotoAnnotation annotationForPhoto: obj]];
+    }
+    return annotations;
+}
+
 
 @end

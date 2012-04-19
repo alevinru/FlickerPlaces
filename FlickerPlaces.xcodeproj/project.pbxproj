@@ -29,6 +29,8 @@
 		D96859DB153CA81000785164 /* Placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = D96859DA153CA81000785164 /* Placeholder.png */; };
 		D96859E1153CAED200785164 /* FPIdentifiableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D96859E0153CAED200785164 /* FPIdentifiableCell.m */; };
 		D96859E9153D761100785164 /* FPCache.m in Sources */ = {isa = PBXBuildFile; fileRef = D96859E8153D761100785164 /* FPCache.m */; };
+		D9CCC53A15408FCF0084248D /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9CCC53915408FCF0084248D /* MapKit.framework */; };
+		D9CCC5471540ADA40084248D /* FlickrPhotoAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = D9CCC5451540ADA40084248D /* FlickrPhotoAnnotation.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -78,6 +80,9 @@
 		D96859E7153D761100785164 /* FPCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FPCache.h; sourceTree = "<group>"; };
 		D96859E8153D761100785164 /* FPCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPCache.m; sourceTree = "<group>"; };
 		D96859EA153F310500785164 /* CachedDataDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CachedDataDelegate.h; sourceTree = SOURCE_ROOT; };
+		D9CCC53915408FCF0084248D /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		D9CCC5451540ADA40084248D /* FlickrPhotoAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlickrPhotoAnnotation.m; sourceTree = "<group>"; };
+		D9CCC5461540ADA40084248D /* FlickrPhotoAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlickrPhotoAnnotation.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +93,7 @@
 				D945F64E153462E400BB3EF7 /* UIKit.framework in Frameworks */,
 				D945F650153462E400BB3EF7 /* Foundation.framework in Frameworks */,
 				D945F652153462E400BB3EF7 /* CoreGraphics.framework in Frameworks */,
+				D9CCC53A15408FCF0084248D /* MapKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -129,6 +135,7 @@
 		D945F64C153462E400BB3EF7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D9CCC53915408FCF0084248D /* MapKit.framework */,
 				D945F64D153462E400BB3EF7 /* UIKit.framework */,
 				D945F64F153462E400BB3EF7 /* Foundation.framework */,
 				D945F651153462E400BB3EF7 /* CoreGraphics.framework */,
@@ -195,6 +202,8 @@
 		D945F69415349C8900BB3EF7 /* FlickrFetcher */ = {
 			isa = PBXGroup;
 			children = (
+				D9CCC5451540ADA40084248D /* FlickrPhotoAnnotation.m */,
+				D9CCC5461540ADA40084248D /* FlickrPhotoAnnotation.h */,
 				D945F69515349C8900BB3EF7 /* FlickrAPIKey.h */,
 				D945F69615349C8900BB3EF7 /* FlickrFetcher.h */,
 				D945F69715349C8900BB3EF7 /* FlickrFetcher.m */,
@@ -321,6 +330,7 @@
 				D95C33AE1536BE1600A36EDD /* FPTestViewController.m in Sources */,
 				D96859E1153CAED200785164 /* FPIdentifiableCell.m in Sources */,
 				D96859E9153D761100785164 /* FPCache.m in Sources */,
+				D9CCC5471540ADA40084248D /* FlickrPhotoAnnotation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

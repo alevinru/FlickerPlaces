@@ -33,21 +33,26 @@
                 UIImage *image = [UIImage imageWithData:[self.imageSource dataWithContentsOfURL:self.imageURL]];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.activityIndicator stopAnimating];
-                    self.imageView.image = image;
-                    self.scrollImageView.maximumZoomScale = 1.0;
-                    self.scrollImageView.contentSize = self.imageView.frame.size;
-                    
-                    //NSLog(@"%@ image size: %f, %f", NSStringFromSelector(_cmd), image.size.width, image.size.height);
-                    //NSLog(@"%@ imageView bounds: %f, %f", NSStringFromSelector(_cmd), self.imageView.bounds.size.width, self.imageView.bounds.size.height);
-                    //NSLog(@"%@ scrollView bounds: %f, %f", NSStringFromSelector(_cmd), self.scrollImageView.bounds.size.width, self.scrollImageView.bounds.size.height);
-                    
-                    self.imageView.frame = CGRectMake(0, 0, self.imageView.image.size.width, self.imageView.image.size.height);
 
-                    CGFloat xScale = self.scrollImageView.bounds.size.width / self.imageView.frame.size.width;
-                    CGFloat yScale = self.scrollImageView.bounds.size.height / self.imageView.frame.size.height;
-                    
-                    self.scrollImageView.minimumZoomScale = MIN(yScale, xScale);
-                    self.scrollImageView.zoomScale = MAX(yScale, xScale);
+                    if (image) {
+                        self.imageView.image = image;
+                        self.scrollImageView.maximumZoomScale = 1.0;
+                        self.scrollImageView.contentSize = self.imageView.frame.size;
+                        
+                        //NSLog(@"%@ image size: %f, %f", NSStringFromSelector(_cmd), image.size.width, image.size.height);
+                        //NSLog(@"%@ imageView bounds: %f, %f", NSStringFromSelector(_cmd), self.imageView.bounds.size.width, self.imageView.bounds.size.height);
+                        //NSLog(@"%@ scrollView bounds: %f, %f", NSStringFromSelector(_cmd), self.scrollImageView.bounds.size.width, self.scrollImageView.bounds.size.height);
+                        
+                        self.imageView.frame = CGRectMake(0, 0, self.imageView.image.size.width, self.imageView.image.size.height);
+
+                        CGFloat xScale = self.scrollImageView.bounds.size.width / self.imageView.frame.size.width;
+                        CGFloat yScale = self.scrollImageView.bounds.size.height / self.imageView.frame.size.height;
+                        
+                        self.scrollImageView.minimumZoomScale = MIN(yScale, xScale);
+                        self.scrollImageView.zoomScale = MAX(yScale, xScale);
+                    } else {
+                        NSLog(@"%@ error loading image", NSStringFromSelector(_cmd));
+                    }
                 });
             });
             dispatch_release(imageDownloadQ);

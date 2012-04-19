@@ -71,7 +71,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wqU-zB-bu8" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController title="Place photos" id="EAq-pG-Qaa" customClass="FPTableViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="6X3-zn-K8e">
-                        <rect key="frame" x="0.0" y="64" width="320" height="367"/>
+                        <rect key="frame" x="0.0" y="94" width="320" height="337"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -109,7 +109,8 @@
                             <outlet property="delegate" destination="EAq-pG-Qaa" id="vRW-4f-QTs"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Place photos" id="ksA-R4-p4e"/>
+                    <navigationItem key="navigationItem" title="Place photos" prompt="Place name" id="ksA-R4-p4e"/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics"/>
                 </tableViewController>
             </objects>
             <point key="canvasLocation" x="1194" y="-280"/>
@@ -261,7 +262,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6YY-iX-g9e" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController storyboardIdentifier="recentGeoreferencedPhotos" title="Recent Photos" id="J25-fc-Xd1" customClass="FPTableViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="IDI-HB-0Hl">
-                        <rect key="frame" x="0.0" y="64" width="320" height="372"/>
+                        <rect key="frame" x="0.0" y="94" width="320" height="386"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -300,18 +301,39 @@
                         </connections>
                     </tableView>
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" title="Recent Photos" id="WVc-a4-nsh">
+                    <navigationItem key="navigationItem" prompt="Recent Photos" id="WVc-a4-nsh">
+                        <nil key="title"/>
+                        <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="hyw-zr-z2Q">
+                            <rect key="frame" x="96" y="37" width="128" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <segments>
+                                <segment title="List"/>
+                                <segment title="Map"/>
+                            </segments>
+                            <connections>
+                                <action selector="presentationStyleChosen:" destination="J25-fc-Xd1" eventType="valueChanged" id="Yxj-SF-alX"/>
+                            </connections>
+                        </segmentedControl>
                         <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="RM0-WU-mVh">
                             <connections>
                                 <action selector="refreshButtonPressed:" destination="J25-fc-Xd1" id="6We-SO-Dui"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
-                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="mapView" destination="F94-3f-sra" id="Jav-l6-8nc"/>
                         <outlet property="refreshButton" destination="RM0-WU-mVh" id="yM3-0F-EsD"/>
                     </connections>
                 </tableViewController>
+                <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" id="F94-3f-sra">
+                    <rect key="frame" x="0.0" y="-129" width="320" height="386"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                    <connections>
+                        <outlet property="delegate" destination="J25-fc-Xd1" id="zK1-8n-KgH"/>
+                    </connections>
+                </mapView>
             </objects>
             <point key="canvasLocation" x="721" y="356"/>
         </scene>
@@ -321,15 +343,15 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TC3-Cb-apO" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController id="Z6g-lK-vb8" customClass="ImageViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="aes-91-IVL">
-                        <rect key="frame" x="0.0" y="64" width="320" height="367"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="416"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="S2g-Gs-7fx">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="367"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="416"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="aad-qD-sTR">
-                                        <rect key="frame" x="0.0" y="0.0" width="320" height="367"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="416"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     </imageView>
                                     <activityIndicatorView opaque="NO" contentMode="scaleToFill" hidesWhenStopped="YES" animating="YES" style="whiteLarge" id="k2B-ml-gD4">
@@ -346,7 +368,6 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" title="Photo" id="17F-gt-D8H"/>
-                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
                     <connections>
                         <outlet property="activityIndicator" destination="k2B-ml-gD4" id="aM2-eg-Dv3"/>
                         <outlet property="imageView" destination="aad-qD-sTR" id="Hzq-eq-aYu"/>
@@ -354,7 +375,7 @@
                     </connections>
                 </viewController>
             </objects>
-            <point key="canvasLocation" x="1194" y="356"/>
+            <point key="canvasLocation" x="1598" y="364"/>
         </scene>
         <!--Navigation Controller - Place navigator-->
         <scene sceneID="SjV-FF-zPn">
@@ -363,7 +384,6 @@
                 <navigationController title="Place navigator" id="8IA-TG-rr6" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Top Places" image="android-home.png" id="lxW-Ma-rmp"/>
                     <toolbarItems/>
-                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
                     <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="blackOpaque" id="sFE-4G-50v">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -442,7 +462,6 @@
                 <navigationController title="Recents" id="Qq0-yS-NDO" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" systemItem="recents" id="GEC-Yr-IBN"/>
                     <toolbarItems/>
-                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
                     <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="blackOpaque" id="uY1-Hd-mc0">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -462,7 +481,8 @@
                 <navigationController title="Cache" id="mkv-VO-dPM" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" systemItem="downloads" id="1xX-1Z-sls"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="mU0-lX-4hC">
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
+                    <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="blackOpaque" id="mU0-lX-4hC">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -484,6 +504,6 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="ej0-Ly-ZZN"/>
+        <segue reference="mPf-vb-ZYP"/>
     </inferredMetricsTieBreakers>
 </document>

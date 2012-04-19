@@ -89,6 +89,22 @@
 
 }
 
+- (NSUInteger) evictFromCache: (NSUInteger) atIndex {
+    
+    NSDictionary * objectToEvict = [self.cacheFiles objectAtIndex:atIndex];
+    NSNumber * size = [objectToEvict objectForKey: @"size"];
+    NSString * name = [objectToEvict objectForKey: @"name"];
+    
+    NSLog(@"%@ removes: %@", NSStringFromSelector(_cmd), name);
+    
+    [self.cacheFiles removeObjectAtIndex: atIndex];
+    
+    self.totalSize -= [size intValue];
+    
+    [[NSFileManager defaultManager] removeItemAtURL: [self.imagesLocation URLByAppendingPathComponent: name isDirectory:NO] error: nil];
+    
+    return [size intValue];
+}
 
 - (BOOL) resizeCacheToFreeSpaceOf: (NSNumber*) bytes {
     
@@ -96,21 +112,11 @@
     
     while ([bytes intValue] + self.totalSize > MAX_CACHE_SIZE ) {
         
-        NSDictionary * objectToEvict = [self.cacheFiles objectAtIndex:0];
-        NSNumber * size = [objectToEvict objectForKey: @"size"];
-        NSString * name = [objectToEvict objectForKey: @"name"];
+        NSUInteger size = [self evictFromCache: 0];
         
         if (!size) return NO;
         
-        freedBytes += [size intValue];
-        
-        NSLog(@"%@ removes: %@", NSStringFromSelector(_cmd), name);
-        
-        [self.cacheFiles removeObjectAtIndex: 0];
-        
-        self.totalSize -= [size intValue];
-        
-        [[NSFileManager defaultManager] removeItemAtURL: [self.imagesLocation URLByAppendingPathComponent: name isDirectory:NO] error: nil];
+        freedBytes += size;
         
     }
     
