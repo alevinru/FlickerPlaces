@@ -17,6 +17,7 @@
 @interface FPTableViewController ()
 
 @property (strong, nonatomic) NSMutableDictionary * thumbnails;
+
 - (NSArray *)mapAnnotations;
 @end
 
@@ -43,8 +44,6 @@
         NSLog(@"%@", NSStringFromSelector(_cmd));
     }];
     
-//    [self.tableView setHidden: sender.selectedSegmentIndex == 1];
-//    [self.mapView setHidden: sender.selectedSegmentIndex == 0];
     NSLog(@"mapView superview: %@", NSStringFromClass([self.mapView.superview class]));
     
 }
@@ -71,7 +70,7 @@
     dispatch_async(downloadQueue, ^{
         [self loadData];
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
+            [self reloadViews];
             if (theButton)
                 self.navigationItem.rightBarButtonItem = theButton;
             else {
@@ -84,11 +83,21 @@
     dispatch_release(downloadQueue);    
 }
 
+- (void) reloadViews {
+    self.thumbnails = [[NSMutableDictionary alloc] init];
+
+    [self.tableView reloadData];
+    
+    if (self.mapView){
+        NSArray * annotations = [self mapAnnotations];
+        if (annotations) [self.mapView removeAnnotations:self.mapView.annotations];
+        if (annotations) [self.mapView addAnnotations: annotations];
+    }
+}
+
 
 - (void) loadData {
 
-    self.thumbnails = [[NSMutableDictionary alloc] init];
-    
     if ([self.title isEqualToString: TOP_PLACES_VIEW_TITLE])
         self.flickrData = [FlickrFetcher topPlaces];
     else if ([self.title isEqualToString: RECENT_PHOTOS_VIEW_TITLE])
@@ -106,10 +115,27 @@
 
 }
 
+- (NSArray *)mapAnnotations
+{
+    NSMutableArray *annotations = [NSMutableArray arrayWithCapacity:[self.flickrData count]];
+    for (NSDictionary *obj in self.flickrData) {
+        [annotations addObject:[FlickrPhotoAnnotation annotationForPhoto: obj]];
+    }
+    return annotations;
+}
+
+
 
 -(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
-    NSDictionary * fclickrObject = [[self.flickrData objectAtIndex: [self.tableView indexPathForCell: sender].row] copy];
+    NSDictionary * fclickrObject;
+    
+    if ([sender isKindOfClass: [UITableViewCell class]])
+        fclickrObject = [self.flickrData objectAtIndex: [self.tableView indexPathForCell: sender].row];
+    else if ([sender isKindOfClass: [MKAnnotationView class]]) {
+        fclickrObject = [[sender annotation] photo];
+    };
+    
     FPAppDelegate * fp = (FPAppDelegate *) [[UIApplication sharedApplication] delegate];
     
     id dvc = [segue destinationViewController];
@@ -119,7 +145,7 @@
     else if ([segue.identifier isEqualToString: @"Show photos from the place"]){
         [dvc setFlickrPlace: fclickrObject];
         [[dvc navigationItem] setPrompt: [fclickrObject objectForKey: FLICKR_PLACE_NAME]];
-    } else if ([segue.identifier isEqualToString: @"Show the photo"]){
+    } else if ([segue.identifier isEqualToString: @"Show the photo"] || [segue.identifier isEqualToString: @"Show the photo from map"]){
         [dvc setImageURL: [FlickrFetcher urlForPhoto: fclickrObject format: FlickrPhotoFormatLarge]];
         [dvc setImageSource: fp];
     } else if ([segue.identifier isEqualToString: @"Show a cached photo"]){
@@ -234,26 +260,25 @@
         
         cell.imageView.image = [self.thumbnails objectForKey: photoId];
         
-        if (!cell.imageView.image)
-            cell.imageView.image = [UIImage imageNamed: @"Placeholder.png"]
-        ;
+        if (!cell.imageView.image) {
+            cell.imageView.image = [UIImage imageNamed: @"Placeholder.png"];
         
-        
-        dispatch_queue_t downloadQueue = dispatch_queue_create("flickr thumbnailer", NULL);
-        
-        dispatch_async(downloadQueue, ^{
-            UIImage * thumbnail = [[UIImage alloc] initWithData: [NSData dataWithContentsOfURL: [FlickrFetcher urlForPhoto:flickrObject format: FlickrPhotoFormatSquare]]];
+            dispatch_queue_t downloadQueue = dispatch_queue_create("flickr thumbnailer", NULL);
             
-            [self.thumbnails setObject: thumbnail forKey: photoId];
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if ([cell.identifier isEqual:  photoId])
-                    [[cell imageView] setImage: thumbnail];
+            dispatch_async(downloadQueue, ^{
+                UIImage * thumbnail = [[UIImage alloc] initWithData: [NSData dataWithContentsOfURL: [FlickrFetcher urlForPhoto:flickrObject format: FlickrPhotoFormatSquare]]];
                 
+                [self.thumbnails setObject: thumbnail forKey: photoId];
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if ([cell.identifier isEqual:  photoId])
+                        [[cell imageView] setImage: thumbnail];
+                    
+                });
             });
-        });
-        
-        dispatch_release(downloadQueue);
+            
+            dispatch_release(downloadQueue);
+        }
     }
     
     return cell;
@@ -322,16 +347,6 @@
 
 #pragma marm - Map view delegate
 
-- (void)mapView:(MKMapView *)map regionDidChangeAnimated:(BOOL)animated
-{
-    NSArray *oldAnnotations = self.mapView.annotations;
-    [self.mapView removeAnnotations:oldAnnotations];
-    
-    NSArray *newAnnotations = [self mapAnnotations];
-    [self.mapView addAnnotations:newAnnotations];
-
-}
-
 - (MKAnnotationView *)mapView:(MKMapView *)map viewForAnnotation:(id <MKAnnotation>)annotation
 {
     static NSString *AnnotationViewID = @"annotationViewID";
@@ -341,6 +356,9 @@
     if (annotationView == nil)
     {
         annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:AnnotationViewID];
+        annotationView.canShowCallout = YES;
+        annotationView.leftCalloutAccessoryView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
+        annotationView.rightCalloutAccessoryView = [UIButton buttonWithType: UIButtonTypeDetailDisclosure];
     }
     
     annotationView.annotation = annotation;
@@ -348,13 +366,38 @@
     return annotationView;
 }
 
-- (NSArray *)mapAnnotations
+- (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *) aView
 {
-    NSMutableArray *annotations = [NSMutableArray arrayWithCapacity:[self.flickrData count]];
-    for (NSDictionary *obj in self.flickrData) {
-        [annotations addObject:[FlickrPhotoAnnotation annotationForPhoto: obj]];
+    NSDictionary * photo = [(FlickrPhotoAnnotation *)aView.annotation photo];
+    NSString * photoId = [photo objectForKey: FLICKR_PHOTO_ID];
+    UIImage * image = [self.thumbnails objectForKey: photoId];
+    
+    
+    if (image) [(UIImageView *) aView.leftCalloutAccessoryView setImage:image];
+    else {
+        dispatch_queue_t downloadQueue = dispatch_queue_create("flickr thumbnailer", NULL);
+        
+        dispatch_async(downloadQueue, ^{
+            UIImage * thumbnail = [[UIImage alloc] initWithData: [NSData dataWithContentsOfURL: [FlickrFetcher urlForPhoto:photo format: FlickrPhotoFormatSquare]]];
+            
+            if (thumbnail) {
+                [self.thumbnails setObject: thumbnail forKey: photoId];
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if ([[(FlickrPhotoAnnotation *)aView.annotation photo] isEqual: photo])
+                        [(UIImageView *) aView.leftCalloutAccessoryView setImage:thumbnail];
+                    
+                });
+            }
+        });
+        
+        dispatch_release(downloadQueue);
     }
-    return annotations;
+}
+
+- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control
+{    
+    [self performSegueWithIdentifier: @"Show the photo" sender: view];
 }
 
 
