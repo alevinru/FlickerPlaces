@@ -288,14 +288,17 @@
             
             dispatch_async(downloadQueue, ^{
                 UIImage * thumbnail = [[UIImage alloc] initWithData: [NSData dataWithContentsOfURL: [FlickrFetcher urlForPhoto:flickrObject format: FlickrPhotoFormatSquare]]];
-                
-                [self.thumbnails setObject: thumbnail forKey: photoId];
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if ([cell.identifier isEqual:  photoId])
-                        [[cell imageView] setImage: thumbnail];
+                if (thumbnail) {
+                    [self.thumbnails setObject: thumbnail forKey: photoId];
                     
-                });
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if ([cell.identifier isEqual:  photoId])
+                            [[cell imageView] setImage: thumbnail];
+                        
+                    });
+                } else {
+                    NSLog (@"%@ no thumbnail", NSStringFromSelector(_cmd));
+                }
             });
             
             dispatch_release(downloadQueue);
