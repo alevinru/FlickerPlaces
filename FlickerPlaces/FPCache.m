@@ -70,11 +70,11 @@
         return [d1 compare: d2];
     }];
     
-    for (NSDictionary * image in self.cacheFiles) {
+    /*for (NSDictionary * image in self.cacheFiles) {
         NSLog(@"%@ image (size, ts): %@ (%d, %@)", NSStringFromSelector(_cmd), [image objectForKey: @"name"], [[image objectForKey: @"size"] intValue], [image objectForKey: @"lastAccess"]);
-    }
+    }*/
     
-    NSLog(@"%@ images found total size: %d bytes", NSStringFromSelector(_cmd), self.totalSize);
+    //NSLog(@"%@ images found total size: %d bytes", NSStringFromSelector(_cmd), self.totalSize);
     
     return self;
     
@@ -85,7 +85,7 @@
     [self.cacheFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: name, @"name", bytes, @"size", [NSDate dateWithTimeIntervalSinceNow: 0], @"lastAccess", nil]];
     self.totalSize += [bytes intValue];
     
-    NSLog(@"%@ total cache size: %d", NSStringFromSelector(_cmd), self.totalSize);
+    //NSLog(@"%@ total cache size: %d", NSStringFromSelector(_cmd), self.totalSize);
 
 }
 
@@ -95,7 +95,7 @@
     NSNumber * size = [objectToEvict objectForKey: @"size"];
     NSString * name = [objectToEvict objectForKey: @"name"];
     
-    NSLog(@"%@ removes: %@", NSStringFromSelector(_cmd), name);
+    //NSLog(@"%@ removes: %@", NSStringFromSelector(_cmd), name);
     
     [self.cacheFiles removeObjectAtIndex: atIndex];
     
@@ -120,7 +120,7 @@
         
     }
     
-    NSLog(@"%@ total cache size: %d", NSStringFromSelector(_cmd), self.totalSize);
+    //NSLog(@"%@ total cache size: %d", NSStringFromSelector(_cmd), self.totalSize);
     
     return YES;
 
@@ -131,7 +131,7 @@
     
     NSURL * path = [self.imagesLocation URLByAppendingPathComponent: url.lastPathComponent];
     
-    NSLog(@"%@ %@", NSStringFromSelector(_cmd), url);
+    //NSLog(@"%@ %@", NSStringFromSelector(_cmd), url);
     
     NSData * result = [NSData dataWithContentsOfURL: path];
     
@@ -145,7 +145,7 @@
         [self.cacheFiles removeObjectAtIndex: cachedIndex];
         [self.cacheFiles addObject: obj];
         
-        NSLog(@"%@ from cache at index: %d", NSStringFromSelector(_cmd), cachedIndex);
+        //NSLog(@"%@ from cache at index: %d", NSStringFromSelector(_cmd), cachedIndex);
         
     } else {
         
@@ -159,7 +159,7 @@
         
         if (wroteFile) [self registerCachedObject: path.lastPathComponent ofSize: size];
         
-        NSLog(@"%@ new file: %@", NSStringFromSelector(_cmd), wroteFile ? @"yes" : @"no");
+        //NSLog(@"%@ new file: %@", NSStringFromSelector(_cmd), wroteFile ? @"yes" : @"no");
         
     }
     

@@ -43,15 +43,11 @@
 - (IBAction)presentationStyleChosen:(UISegmentedControl *)sender {
     
     self.presentationStyle = sender.selectedSegmentIndex;
-        
-    NSLog(@"mapView superview: %@", NSStringFromClass([self.mapView.superview class]));
     
 }
 
 - (void) arrangeViews {
-    [UIView transitionFromView: self.presentationStyle == 1 ? self.tableView : self.mapView toView: self.presentationStyle == 0 ? self.tableView : self.mapView duration: 1 options:UIViewAnimationOptionTransitionFlipFromLeft completion: ^(BOOL finished) {
-        NSLog(@"%@", NSStringFromSelector(_cmd));
-    }];
+    [UIView transitionFromView: self.presentationStyle == 1 ? self.tableView : self.mapView toView: self.presentationStyle == 0 ? self.tableView : self.mapView duration: 1 options:UIViewAnimationOptionTransitionFlipFromLeft completion: nil];
 }
 
 
@@ -101,8 +97,31 @@
     
     if (self.mapView){
         NSArray * annotations = [self mapAnnotations];
-        if (annotations) [self.mapView removeAnnotations:self.mapView.annotations];
-        if (annotations) [self.mapView addAnnotations: annotations];
+        if (self.mapView.annotations) [self.mapView removeAnnotations:self.mapView.annotations];
+        if (annotations) {
+            [self.mapView addAnnotations: annotations];
+            
+            CLLocationCoordinate2D anyCL = [[annotations lastObject] coordinate];
+            
+            CGFloat minLat = anyCL.latitude, maxLat = minLat;
+            CGFloat minLon = anyCL.longitude, maxLon = minLon;
+            
+            for (FlickrPhotoAnnotation * annotation in annotations) {
+                minLat = MIN(annotation.coordinate.latitude, minLat);
+                maxLat = MAX(annotation.coordinate.latitude, maxLat);
+                minLon = MIN(annotation.coordinate.longitude, minLon);
+                maxLon = MAX(annotation.coordinate.longitude, maxLon);
+            };
+            
+            MKCoordinateRegion newRegion;
+            
+            newRegion.center.latitude = (maxLat + minLat)/2.0;
+            newRegion.center.longitude = (maxLon + minLon)/2.0;
+            newRegion.span.latitudeDelta = (maxLat - minLat);
+            newRegion.span.longitudeDelta = (maxLon - minLon);
+
+            [self.mapView setRegion: newRegion];
+        }
     }
 }
 
@@ -156,16 +175,13 @@
     else if ([segue.identifier isEqualToString: @"Show photos from the place"]){
         [dvc setFlickrPlace: fclickrObject];
         [[dvc navigationItem] setPrompt: [fclickrObject objectForKey: FLICKR_PLACE_NAME]];
-    } else if ([segue.identifier isEqualToString: @"Show the photo"] || [segue.identifier isEqualToString: @"Show the photo from map"]){
+    } else if ([segue.identifier isEqualToString: @"Show the photo"]){
         [dvc setImageURL: [FlickrFetcher urlForPhoto: fclickrObject format: FlickrPhotoFormatLarge]];
         [dvc setImageSource: fp];
     } else if ([segue.identifier isEqualToString: @"Show a cached photo"]){
         [dvc setImageURL: [NSURL URLWithString: [fclickrObject objectForKey: @"name"]]];
         [dvc setImageSource: fp];
     }
-
-    
-    //NSLog(@"%@: %@", NSStringFromSelector(_cmd), segue.identifier);
     
 }
 
@@ -177,7 +193,6 @@
         newRegion.center.longitude = -96.24;
         newRegion.span.latitudeDelta = 28.49;
         newRegion.span.longitudeDelta = 31.025;
-//        [self.mapView setFrame: self.tableView.frame];
         [self.mapView setRegion:newRegion animated:NO];
         self.presentationStyle = 0;
     }
@@ -275,7 +290,7 @@
         if ([cell.textLabel.text isEqualToString:@""])
             cell.textLabel.text = @"Untitled";
         
-        NSString * photoDate = [NSDateFormatter localizedStringFromDate:[NSDate dateWithTimeIntervalSince1970: [[flickrObject objectForKey: FLICKR_DATE_UPLOAD] intValue]] dateStyle:NSDateFormatterNoStyle timeStyle: NSDateFormatterShortStyle];
+        NSString * photoDate = [NSDateFormatter localizedStringFromDate:[NSDate dateWithTimeIntervalSince1970: [[flickrObject objectForKey: FLICKR_DATE_UPLOAD] intValue]] dateStyle:NSDateFormatterShortStyle timeStyle: NSDateFormatterShortStyle];
                                 
         cell.detailTextLabel.text = [NSString stringWithFormat:@"by %@ at %@",[flickrObject objectForKey: FLICKR_PHOTO_OWNER], photoDate];
         
@@ -396,9 +411,9 @@
     NSString * photoId = [photo objectForKey: FLICKR_PHOTO_ID];
     UIImage * image = [self.thumbnails objectForKey: photoId];
     
+    [(UIImageView *) aView.leftCalloutAccessoryView setImage:image];
     
-    if (image) [(UIImageView *) aView.leftCalloutAccessoryView setImage:image];
-    else {
+    if (!image) {
         dispatch_queue_t downloadQueue = dispatch_queue_create("flickr thumbnailer", NULL);
         
         dispatch_async(downloadQueue, ^{
