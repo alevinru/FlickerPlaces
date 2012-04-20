@@ -15,6 +15,7 @@
 #define FLICKR_LATITUDE @"latitude"
 #define FLICKR_LONGITUDE @"longitude"
 #define FLICKR_PLACE_PHOTO_COUNT @"photo_count"
+#define FLICKR_DATE_UPLOAD @"dateupload"
 
 typedef enum {
 	FlickrPhotoFormatSquare = 1,

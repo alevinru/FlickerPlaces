@@ -27,7 +27,7 @@
 
 + (NSArray *)recentGeoreferencedPhotos
 {
-    NSString *request = [NSString stringWithFormat:@"http://api.flickr.com/services/rest/?method=flickr.photos.search&per_page=500&license=1,2,4,7&has_geo=1&extras=original_format,tags,description,geo,date_upload,owner_name,place_url"];
+    NSString *request = [NSString stringWithFormat:@"http://api.flickr.com/services/rest/?method=flickr.photos.search&per_page=500&has_geo=1&extras=original_format,tags,description,geo,date_upload,owner_name,place_url"];
     return [[self executeFlickrFetch:request] valueForKeyPath:@"photos.photo"];
 }
 

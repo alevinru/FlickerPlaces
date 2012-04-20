@@ -17,8 +17,9 @@
 @interface FPTableViewController ()
 
 @property (strong, nonatomic) NSMutableDictionary * thumbnails;
-
+@property (nonatomic) NSUInteger presentationStyle;
 - (NSArray *)mapAnnotations;
+
 @end
 
 @implementation FPTableViewController
@@ -28,6 +29,7 @@
 @synthesize refreshButton = _refreshButton;
 @synthesize flickrPlace = _flickrPlace;
 @synthesize thumbnails = _thumbnails;
+@synthesize presentationStyle = _presentationStyle;
 
 - (NSArray *) flickrData {
     return _flickrData ? _flickrData : (_flickrData = [[NSArray alloc] init]);
@@ -40,14 +42,23 @@
 
 - (IBAction)presentationStyleChosen:(UISegmentedControl *)sender {
     
-    [UIView transitionFromView: sender.selectedSegmentIndex == 1 ? self.tableView : self.mapView toView: sender.selectedSegmentIndex == 0 ? self.tableView : self.mapView duration: 1 options:UIViewAnimationOptionTransitionFlipFromLeft completion: ^(BOOL finished) {
-        NSLog(@"%@", NSStringFromSelector(_cmd));
-    }];
-    
+    self.presentationStyle = sender.selectedSegmentIndex;
+        
     NSLog(@"mapView superview: %@", NSStringFromClass([self.mapView.superview class]));
     
 }
 
+- (void) arrangeViews {
+    [UIView transitionFromView: self.presentationStyle == 1 ? self.tableView : self.mapView toView: self.presentationStyle == 0 ? self.tableView : self.mapView duration: 1 options:UIViewAnimationOptionTransitionFlipFromLeft completion: ^(BOOL finished) {
+        NSLog(@"%@", NSStringFromSelector(_cmd));
+    }];
+}
+
+
+-(void) setPresentationStyle:(NSUInteger)presentationStyle {
+    _presentationStyle = presentationStyle;
+    [self arrangeViews];
+}
 
 - (IBAction)refreshButtonPressed:(UIBarButtonItem *)theButton {
     
@@ -168,6 +179,7 @@
         newRegion.span.longitudeDelta = 31.025;
 //        [self.mapView setFrame: self.tableView.frame];
         [self.mapView setRegion:newRegion animated:NO];
+        self.presentationStyle = 0;
     }
 }
 
@@ -188,6 +200,13 @@
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+}
+
+- (void) viewWillAppear:(BOOL)animated {
+    
+    if (self.mapView)
+        [self arrangeViews];
+    
 }
 
 - (void)viewDidUnload
@@ -256,7 +275,9 @@
         if ([cell.textLabel.text isEqualToString:@""])
             cell.textLabel.text = @"Untitled";
         
-        cell.detailTextLabel.text = [NSString stringWithFormat:@"by %@",[flickrObject objectForKey: FLICKR_PHOTO_OWNER]];
+        NSString * photoDate = [NSDateFormatter localizedStringFromDate:[NSDate dateWithTimeIntervalSince1970: [[flickrObject objectForKey: FLICKR_DATE_UPLOAD] intValue]] dateStyle:NSDateFormatterNoStyle timeStyle: NSDateFormatterShortStyle];
+                                
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"by %@ at %@",[flickrObject objectForKey: FLICKR_PHOTO_OWNER], photoDate];
         
         cell.imageView.image = [self.thumbnails objectForKey: photoId];
         
